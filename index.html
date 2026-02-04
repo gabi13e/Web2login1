@@ -16,7 +16,8 @@
         <div class="nav-container">
             <div class="logo">
                 <a href="index.html">
-                    <img src="img/logo.png" alt="Golden Crust Bakery" class="logo-img">
+                    <img src="img/logo.png" alt="Golden Crust Bakery" class="logo-img" onerror="this.style.display='none'">
+                    <span class="logo-text">Golden Crust</span>
                 </a>
             </div>
             <ul class="nav-menu">
@@ -66,7 +67,7 @@
                                 <p class="card-desc">Fresh seasonal fruits on pastry cream</p>
                                 <div class="card-footer">
                                     <span class="price">₱260</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="1">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +81,7 @@
                                 <p class="card-desc">Choux pastry with chocolate glaze</p>
                                 <div class="card-footer">
                                     <span class="price">₱220</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="2">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +95,7 @@
                                 <p class="card-desc">Caramelized apples in puff pastry</p>
                                 <div class="card-footer">
                                     <span class="price">₱190</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="3">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +109,7 @@
                                 <p class="card-desc">Flaky, buttery layers with golden crust</p>
                                 <div class="card-footer">
                                     <span class="price">₱180</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="4">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +123,7 @@
                                 <p class="card-desc">Dark chocolate in buttery pastry</p>
                                 <div class="card-footer">
                                     <span class="price">₱200</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="5">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +137,7 @@
                                 <p class="card-desc">Sweet almond cream and flaky pastry</p>
                                 <div class="card-footer">
                                     <span class="price">₱220</span>
-                                    <button class="btn-add">Add to Cart</button>
+                                    <button class="btn-add" data-product-id="6">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +185,7 @@
                         <h3>Croissants</h3>
                         <p>Buttery, flaky layers perfected through traditional French technique</p>
                         <span class="price">₱180</span>
-                        <button class="btn-order">Add to Order</button>
+                        <button class="btn-order" data-product-id="4">Add to Order</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -195,7 +196,7 @@
                         <h3>Sourdough Loaf</h3>
                         <p>Naturally fermented with a crispy crust and tangy, complex flavor</p>
                         <span class="price">₱320</span>
-                        <button class="btn-order">Add to Order</button>
+                        <button class="btn-order" data-product-id="7">Add to Order</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -206,7 +207,7 @@
                         <h3>Seasonal Pastries</h3>
                         <p>Rotating selection featuring fresh, local ingredients</p>
                         <span class="price">₱220</span>
-                        <button class="btn-order">Add to Order</button>
+                        <button class="btn-order" data-product-id="2">Add to Order</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -217,7 +218,7 @@
                         <h3>Baguettes</h3>
                         <p>Classic French bread with a golden crust and airy interior</p>
                         <span class="price">₱160</span>
-                        <button class="btn-order">Add to Order</button>
+                        <button class="btn-order" data-product-id="8">Add to Order</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -239,7 +240,7 @@
                         <h3>Fruit Tarts</h3>
                         <p>Delicate pastry cream topped with seasonal fresh fruits</p>
                         <span class="price">₱260</span>
-                        <button class="btn-order">Add to Order</button>
+                        <button class="btn-order" data-product-id="1">Add to Order</button>
                     </div>
                 </div>
             </div>
@@ -287,11 +288,11 @@
                         <p>Phone: (555) 123-4567<br>Email: hello@goldencrust.com</p>
                     </div>
                 </div>
-                <form class="contact-form">
-                    <input type="text" placeholder="Name" required>
-                    <input type="email" placeholder="Email" required>
-                    <input type="text" placeholder="Subject" required>
-                    <textarea placeholder="Message" rows="5" required></textarea>
+                <form class="contact-form" id="contactForm">
+                    <input type="text" name="name" placeholder="Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="subject" placeholder="Subject" required>
+                    <textarea name="message" placeholder="Message" rows="5" required></textarea>
                     <button type="submit" class="btn-submit">Send Message</button>
                 </form>
             </div>
@@ -333,7 +334,7 @@
                     <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=800&fit=crop" alt="Bakery">
                     <div class="panel-overlay">
                         <div class="logo-circle">
-                            <img src="img/logo.png" alt="Golden Crust" class="modal-logo">
+                            <span style="font-size: 40px;">🥐</span>
                         </div>
                         <h2>Welcome Back!</h2>
                         <p>To keep connected with us please login with your personal info</p>
@@ -386,7 +387,7 @@
                     <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=600&h=800&fit=crop" alt="Bakery">
                     <div class="panel-overlay">
                         <div class="logo-circle">
-                            <img src="img/logo.png" alt="Golden Crust" class="modal-logo">
+                            <span style="font-size: 40px;">🥐</span>
                         </div>
                         <h2>Welcome Back!</h2>
                         <p>To keep connected with us please login with your personal info</p>
