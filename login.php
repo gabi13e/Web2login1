@@ -24,7 +24,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // Prepare and execute query
-$stmt = $conn->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT id, name, email, password, role FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -46,6 +46,9 @@ if (!password_verify($password, $user['password'])) {
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['user_name'] = $user['name'];
 $_SESSION['user_email'] = $user['email'];
+$_SESSION['user_role'] = $user['role'];
+
+$redirect = $user['role'] === 'admin' ? 'admin_dashboard.html' : 'index.html';
 
 echo json_encode([
     'success' => true,
@@ -53,8 +56,10 @@ echo json_encode([
     'user' => [
         'id' => $user['id'],
         'name' => $user['name'],
-        'email' => $user['email']
-    ]
+        'email' => $user['email'],
+        'role' => $user['role']
+    ],
+    'redirect' => $redirect
 ]);
 
 $stmt->close();

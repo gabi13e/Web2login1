@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Crust - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin: 10px 0;
+        }
+
+        .sidebar-menu a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #d4a574;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #2c3e50;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d4a574;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .section-header h2 {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #d4a574;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b88c50;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #ecf0f1;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        table th {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 5px rgba(212, 165, 116, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .status-processing {
+            background: #3498db;
+            color: white;
+        }
+
+        .status-completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .status-cancelled {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .empty-state p {
+            margin-bottom: 10px;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .success-message.show,
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                display: none;
+            }
+
+            .sidebar.open {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">🍞 Golden Crust Admin</div>
+            <ul class="sidebar-menu">
+                <li><a class="nav-link active" data-section="dashboard">📊 Dashboard</a></li>
+                <li><a class="nav-link" data-section="products">🍰 Products</a></li>
+                <li><a class="nav-link" data-section="orders">📦 Orders</a></li>
+                <li><a class="nav-link" data-section="users">👥 Users</a></li>
+                <li><a class="nav-link" data-section="messages">💬 Messages</a></li>
+            </ul>
+            <hr style="margin: 30px 0; opacity: 0.2;">
+            <div style="font-size: 12px; opacity: 0.8;"><span id="admin-name">Admin</span> • <a href="#" onclick="logout()" style="color: inherit;">Logout</a></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <div class="user-info">
+                    <span id="user-display">Loading...</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Dashboard Section -->
+            <div class="section active" id="dashboard">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Products</div>
+                        <div class="stat-number" id="stat-products">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Customers</div>
+                        <div class="stat-number" id="stat-customers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-number" id="stat-orders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-number" id="stat-revenue">₱0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending Messages</div>
+                        <div class="stat-number" id="stat-messages">0</div>
+                    </div>
+                </div>
+                <div class="section-header">
+                    <h3>Recent Orders</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersTable">
+                        <tr><td colspan="5" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Products Section -->
+            <div class="section" id="products">
+                <div class="section-header">
+                    <h2>Manage Products</h2>
+                    <button class="btn btn-primary" onclick="openProductModal()">➕ Add Product</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>In Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTable">
+                        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="section" id="orders">
+                <div class="section-header">
+                    <h2>Manage Orders</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Users Section -->
+            <div class="section" id="users">
+                <div class="section-header">
+                    <h2>Manage Users</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Messages Section -->
+            <div class="section" id="messages">
+                <div class="section-header">
+                    <h2>Contact Messages</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTable">
+                        <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="productModalTitle">Add Product</span>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <input type="hidden" id="productId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <select id="productCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="pastry">Pastry</option>
+                            <option value="bread">Bread</option>
+                            <option value="cake">Cake</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₱) *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge</label>
+                        <input type="text" id="productBadge" placeholder="e.g., New, Popular, Chef's Choice">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Quantity</label>
+                        <input type="number" id="productQuantity" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="productDescription"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Main Image URL</label>
+                        <input type="text" id="productImage">
+                    </div>
+                    <div class="form-group">
+                        <label>Hover Image URL</label>
+                        <input type="text" id="productHoverImage">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Featured Image URL</label>
+                    <input type="text" id="productFeaturedImage">
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="productInStock" checked>
+                    <label for="productInStock" style="margin-bottom: 0;">In Stock</label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Status Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Order Details</span>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div id="orderDetails"></div>
+            <div class="form-group">
+                <label>Update Status</label>
+                <select id="orderStatus">
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeOrderModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateOrderStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Message Details</span>
+                <button class="modal-close" onclick="closeMessageModal()">&times;</button>
+            </div>
+            <div id="messageDetails"></div>
+            <div class="form-group">
+                <label>Update Status</label>
+                <select id="messageStatus">
+                    <option value="unread">Unread</option>
+                    <option value="read">Read</option>
+                    <option value="replied">Replied</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeMessageModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateMessageStatus()">Update Status</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'admin_dashboard.php';
+        let currentEditItem = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            await checkAdminStatus();
+            setupNavigation();
+        });
+
+        // Setup Navigation
+        function setupNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('data-section');
+                    switchSection(section);
+                });
+            });
+        }
+
+        // Switch Section
+        function switchSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+            // Load data for section
+            if (section === 'products') loadProducts();
+            if (section === 'orders') loadOrders();
+            if (section === 'users') loadUsers();
+            if (section === 'messages') loadMessages();
+        }
+
+        // Check Admin Status
+        async function checkAdminStatus() {
+            try {
+                const response = await fetch('check_session.php');
+                const data = await response.json();
+                if (data.logged_in && data.user.role === 'admin') {
+                    document.getElementById('user-display').textContent = `${data.user.name} (Admin)`;
+                    document.getElementById('admin-name').textContent = data.user.name;
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+            }
+        }
+
+        // Load Stats
+        async function loadStats() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_stats');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('stat-products').textContent = data.stats.products;
+                    document.getElementById('stat-customers').textContent = data.stats.customers;
+                    document.getElementById('stat-orders').textContent = data.stats.orders;
+                    document.getElementById('stat-revenue').textContent = `₱${parseFloat(data.stats.revenue).toFixed(2)}`;
+                    document.getElementById('stat-messages').textContent = data.stats.pending_messages;
+
+                    // Show recent orders
+                    const tbody = document.getElementById('recentOrdersTable');
+                    tbody.innerHTML = '';
+                    data.stats.recent_orders.forEach(order => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>#${order.id}</td>
+                                <td>${order.name || 'Guest'}</td>
+                                <td>₱${parseFloat(order.total_amount).toFixed(2)}</td>
+                                <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                showError('Error loading stats');
+            }
+        }
+
+        // ============= PRODUCTS =============
+        async function loadProducts() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_products');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                const tbody = document.getElementById('productsTable');
+                tbody.innerHTML = '';
+                
+                if (data.success && data.products.length > 0) {
+                    data.products.forEach(product => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>#${product.id}</td>
+                                <td>${product.name}</td>
+                                <td>${product.category}</td>
+                                <td>₱${parseFloat(product.price).toFixed(2)}</td>
+                                <td style="font-weight:600;color:${
+                                    (product.quantity ?? 0) <= 5 ? '#c0392b' : 'inherit'
+                                }">${product.quantity ?? 0}${(product.quantity ?? 0) > 0 && (product.quantity ?? 0) <= 5 ? ' ⚠️' : ''}</td>
+                                <td>${product.in_stock ? '✓ Yes' : '✗ No'}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary" onclick="editProduct(${product.id})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No products found</td></tr>';
+                }
+            } catch (error) {
+                showError('Error loading products');
+            }
+        }
+
+        function openProductModal() {
+            document.getElementById('productId').value = '';
+            document.getElementById('productForm').reset();
+            document.getElementById('productModalTitle').textContent = 'Add Product';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        async function editProduct(id) {
+            try {
+                const response = await fetch(`${API_BASE}?action=get_product&id=${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const product = data.product;
+                    document.getElementById('productId').value = product.id;
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productDescription').value = product.description || '';
+                    document.getElementById('productPrice').value = product.price;
+                    document.getElementById('productCategory').value = product.category;
+                    document.getElementById('productBadge').value = product.badge || '';
+                    document.getElementById('productImage').value = product.image_url || '';
+                    document.getElementById('productHoverImage').value = product.hover_image_url || '';
+                    document.getElementById('productFeaturedImage').value = product.featured_image_url || '';
+                    document.getElementById('productQuantity').value = product.quantity ?? 0;
+                    document.getElementById('productInStock').checked = product.in_stock;
+                    document.getElementById('productModalTitle').textContent = 'Edit Product';
+                    document.getElementById('productModal').classList.add('active');
+                }
+            } catch (error) {
+                showError('Error loading product');
+            }
+        }
+
+        async function saveProduct(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            const id = document.getElementById('productId').value;
+            
+            formData.append('action', id ? 'update_product' : 'create_product');
+            formData.append('id', id || 0);
+            formData.append('name', document.getElementById('productName').value);
+            formData.append('description', document.getElementById('productDescription').value);
+            formData.append('price', document.getElementById('productPrice').value);
+            formData.append('category', document.getElementById('productCategory').value);
+            formData.append('image_url', document.getElementById('productImage').value);
+            formData.append('hover_image_url', document.getElementById('productHoverImage').value);
+            formData.append('featured_image_url', document.getElementById('productFeaturedImage').value);
+            formData.append('badge', document.getElementById('productBadge').value);
+            formData.append('quantity', document.getElementById('productQuantity').value || 0);
+            if (document.getElementById('productInStock').checked) {
+                formData.append('in_stock', '1');
+            }
+
+            try {
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess(data.message);
+                    closeProductModal();
+                    await loadProducts();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error saving product');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const formData = new FormData();
+                formData.append('action', 'delete_product');
+                formData.append('id', id);
+
+                try {
+                    const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showSuccess(data.message);
+                        await loadProducts();
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (error) {
+                    showError('Error deleting product');
+                }
+            }
+        }
+
+        // ============= ORDERS =============
+        async function loadOrders() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_orders');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                const tbody = document.getElementById('ordersTable');
+                tbody.innerHTML = '';
+                
+                if (data.success && data.orders.length > 0) {
+                    data.orders.forEach(order => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>#${order.id}</td>
+                                <td>${order.user_name || 'Guest'}</td>
+                                <td>₱${parseFloat(order.total_amount).toFixed(2)}</td>
+                                <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary" onclick="viewOrder(${order.id})">View</button>
+                                        <button class="btn btn-danger" onclick="deleteOrder(${order.id})">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No orders found</td></tr>';
+                }
+            } catch (error) {
+                showError('Error loading orders');
+            }
+        }
+
+        async function viewOrder(id) {
+            try {
+                const response = await fetch(`${API_BASE}?action=get_order&id=${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const order = data.order;
+                    let itemsHTML = '<table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>';
+                    
+                    order.items.forEach(item => {
+                        itemsHTML += `<tr><td>${item.product_name}</td><td>${item.quantity}</td><td>₱${parseFloat(item.price).toFixed(2)}</td><td>₱${(item.quantity * item.price).toFixed(2)}</td></tr>`;
+                    });
+                    
+                    itemsHTML += '</tbody></table>';
+                    
+                    document.getElementById('orderDetails').innerHTML = `
+                        <div class="form-group">
+                            <label>Order ID:</label>
+                            <p>#${order.id}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Customer:</label>
+                            <p>${order.user_name || 'Guest'} (${order.email || 'N/A'})</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Items:</label>
+                            ${itemsHTML}
+                        </div>
+                        <div class="form-group">
+                            <label>Total Amount:</label>
+                            <p>₱${parseFloat(order.total_amount).toFixed(2)}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Status:</label>
+                            <p><span class="status-badge status-${order.status}">${order.status}</span></p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('orderStatus').value = order.status;
+                    currentEditItem = { id: order.id, type: 'order' };
+                    document.getElementById('orderModal').classList.add('active');
+                }
+            } catch (error) {
+                showError('Error loading order');
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            currentEditItem = null;
+        }
+
+        async function updateOrderStatus() {
+            if (!currentEditItem || currentEditItem.type !== 'order') return;
+
+            const formData = new FormData();
+            formData.append('action', 'update_order_status');
+            formData.append('id', currentEditItem.id);
+            formData.append('status', document.getElementById('orderStatus').value);
+
+            try {
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess(data.message);
+                    closeOrderModal();
+                    await loadOrders();
+                    await loadStats();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error updating order');
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (confirm('Are you sure you want to delete this order?')) {
+                const formData = new FormData();
+                formData.append('action', 'delete_order');
+                formData.append('id', id);
+
+                try {
+                    const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showSuccess(data.message);
+                        await loadOrders();
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (error) {
+                    showError('Error deleting order');
+                }
+            }
+        }
+
+        // ============= USERS =============
+        async function loadUsers() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_users');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                const tbody = document.getElementById('usersTable');
+                tbody.innerHTML = '';
+                
+                if (data.success && data.users.length > 0) {
+                    data.users.forEach(user => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>#${user.id}</td>
+                                <td>${user.name}</td>
+                                <td>${user.email}</td>
+                                <td><span class="status-badge" style="background: ${user.role === 'admin' ? '#d4a574' : '#3498db'}; color: white;">${user.role}</span></td>
+                                <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-danger" onclick="deleteUser(${user.id})">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users found</td></tr>';
+                }
+            } catch (error) {
+                showError('Error loading users');
+            }
+        }
+
+        async function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                const formData = new FormData();
+                formData.append('action', 'delete_user');
+                formData.append('id', id);
+
+                try {
+                    const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showSuccess(data.message);
+                        await loadUsers();
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (error) {
+                    showError('Error deleting user');
+                }
+            }
+        }
+
+        // ============= MESSAGES =============
+        async function loadMessages() {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_messages');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                const tbody = document.getElementById('messagesTable');
+                tbody.innerHTML = '';
+                
+                if (data.success && data.messages.length > 0) {
+                    data.messages.forEach(message => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>#${message.id}</td>
+                                <td>${message.name}</td>
+                                <td>${message.email}</td>
+                                <td>${message.subject}</td>
+                                <td><span class="status-badge" style="background: ${message.status === 'unread' ? '#f39c12' : message.status === 'replied' ? '#27ae60' : '#3498db'}; color: white;">${message.status}</span></td>
+                                <td>${new Date(message.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-primary" onclick="viewMessage(${message.id})">View</button>
+                                        <button class="btn btn-danger" onclick="deleteMessage(${message.id})">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No messages found</td></tr>';
+                }
+            } catch (error) {
+                showError('Error loading messages');
+            }
+        }
+
+        async function viewMessage(id) {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_messages');
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                const message = data.messages.find(m => m.id === id);
+                if (message) {
+                    document.getElementById('messageDetails').innerHTML = `
+                        <div class="form-group">
+                            <label>From:</label>
+                            <p>${message.name} (${message.email})</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Subject:</label>
+                            <p>${message.subject}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Message:</label>
+                            <p>${message.message}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Date:</label>
+                            <p>${new Date(message.created_at).toLocaleString()}</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('messageStatus').value = message.status;
+                    currentEditItem = { id: message.id, type: 'message' };
+                    document.getElementById('messageModal').classList.add('active');
+                }
+            } catch (error) {
+                showError('Error loading message');
+            }
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').classList.remove('active');
+            currentEditItem = null;
+        }
+
+        async function updateMessageStatus() {
+            if (!currentEditItem || currentEditItem.type !== 'message') return;
+
+            const formData = new FormData();
+            formData.append('action', 'update_message_status');
+            formData.append('id', currentEditItem.id);
+            formData.append('status', document.getElementById('messageStatus').value);
+
+            try {
+                const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess(data.message);
+                    closeMessageModal();
+                    await loadMessages();
+                    await loadStats();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error updating message');
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                const formData = new FormData();
+                formData.append('action', 'delete_message');
+                formData.append('id', id);
+
+                try {
+                    const response = await fetch(API_BASE, { method: 'POST', body: formData });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showSuccess(data.message);
+                        await loadMessages();
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (error) {
+                    showError('Error deleting message');
+                }
+            }
+        }
+
+        // ============= UTILITIES =============
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        async function logout() {
+            try {
+                await fetch('logout.php');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', (e) => {
+            const productModal = document.getElementById('productModal');
+            const orderModal = document.getElementById('orderModal');
+            const messageModal = document.getElementById('messageModal');
+            
+            if (e.target === productModal) closeProductModal();
+            if (e.target === orderModal) closeOrderModal();
+            if (e.target === messageModal) closeMessageModal();
+        });
+    </script>
+</body>
+</html>

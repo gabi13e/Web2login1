@@ -44,9 +44,10 @@ if ($result->num_rows > 0) {
 // Hash password
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Insert new user
-$stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-$stmt->bind_param("sss", $name, $email, $hashed_password);
+// Insert new user (default role is 'customer')
+$role = 'customer';
+$stmt = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("ssss", $name, $email, $hashed_password, $role);
 
 if ($stmt->execute()) {
     echo json_encode([

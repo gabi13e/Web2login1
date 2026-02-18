@@ -8,27 +8,44 @@
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
                 <a href="index.html">
-                    <img src="img/logo.png" alt="Golden Crust Bakery" class="logo-img" onerror="this.style.display='none'">
-                    <span class="logo-text">Golden Crust</span>
+                    <img src="img/logo1.png" alt="Golden Crust Bakery" class="logo-img" onerror="this.style.display='none'">
+                    <span class="logo-text-nav">Golden Crust</span>
                 </a>
             </div>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#products" class="nav-link">Products</a></li>
                 <li><a href="#for-bakeries" class="nav-link">For Bakeries</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <button class="login-btn" id="openLoginModal">Login</button>
-            <button class="mobile-toggle">
+            <div class="nav-actions">
+                <button class="login-btn" id="openLoginModal">
+                    <svg class="login-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="login-text">Login</span>
+                </button>
+                <button class="cart-btn" id="openCartDrawer" title="View Cart">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                    <span class="cart-count" id="cartCount" style="display:none;">0</span>
+                </button>
+            </div>
+            <button class="mobile-toggle" id="mobileToggle">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -36,16 +53,45 @@
         </div>
     </nav>
 
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-backdrop" id="cartBackdrop"></div>
+        <div class="cart-drawer-panel">
+            <div class="cart-drawer-header">
+                <h3>Your Cart</h3>
+                <button class="cart-drawer-close" id="closeCartDrawer">&times;</button>
+            </div>
+            <div class="cart-drawer-body">
+                <div class="cart-empty" id="cartEmpty">
+                    <span style="font-size:48px;">&#x1F6D2;</span>
+                    <p>Your cart is empty</p>
+                    <button class="btn-browse" onclick="closeCart(); document.querySelector('#products').scrollIntoView({behavior:'smooth'})">Browse Products</button>
+                </div>
+                <div class="cart-items" id="cartItems"></div>
+            </div>
+            <div class="cart-drawer-footer" id="cartFooter" style="display:none;">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span id="cartTotal">&#8369;0.00</span>
+                </div>
+                <button class="btn-checkout">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-bg"></div>
         <div class="hero-content">
-            <h1 class="hero-title">Freshly Baked Every Morning</h1>
-            <p class="hero-subtitle">Experience artisan quality with every bite</p>
+            <h1 class="hero-title">Freshly Baked<br>Every Morning</h1>
+            <p class="hero-subtitle">Artisan quality with every bite — crafted before dawn</p>
             <div class="hero-buttons">
-                <button class="btn-primary">Explore Menu</button>
-                <button class="btn-secondary">Order Online</button>
+                <button class="btn-primary" id="heroExplore">Explore Menu</button>
+                <button class="btn-secondary" id="heroOrder">Order Online</button>
             </div>
+        </div>
+        <div class="hero-badge" onclick="document.querySelector('#products').scrollIntoView({behavior:'smooth'})">
+            <span>INDULGE</span>
         </div>
     </section>
 
@@ -54,98 +100,15 @@
         <div class="container">
             <h2 class="section-title">Featured Pastries</h2>
             <div class="carousel">
-                <button class="carousel-btn prev">‹</button>
+                <button class="carousel-btn prev">&#8249;</button>
                 <div class="carousel-wrapper">
-                    <div class="carousel-track">
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop" alt="Fruit Tart">
-                                <span class="badge">Seasonal</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Fruit Tart</h3>
-                                <p class="card-desc">Fresh seasonal fruits on pastry cream</p>
-                                <div class="card-footer">
-                                    <span class="price">₱260</span>
-                                    <button class="btn-add" data-product-id="1">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop" alt="Chocolate Eclair">
-                                <span class="badge">Classic</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Chocolate Éclair</h3>
-                                <p class="card-desc">Choux pastry with chocolate glaze</p>
-                                <div class="card-footer">
-                                    <span class="price">₱220</span>
-                                    <button class="btn-add" data-product-id="2">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&h=300&fit=crop" alt="Apple Turnover">
-                                <span class="badge">Traditional</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Apple Turnover</h3>
-                                <p class="card-desc">Caramelized apples in puff pastry</p>
-                                <div class="card-footer">
-                                    <span class="price">₱190</span>
-                                    <button class="btn-add" data-product-id="3">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&h=300&fit=crop" alt="Croissant">
-                                <span class="badge">Chef's Choice</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Butter Croissant</h3>
-                                <p class="card-desc">Flaky, buttery layers with golden crust</p>
-                                <div class="card-footer">
-                                    <span class="price">₱180</span>
-                                    <button class="btn-add" data-product-id="4">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1623334044303-241021148842?w=400&h=300&fit=crop" alt="Pain au Chocolat">
-                                <span class="badge">Popular</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Pain au Chocolat</h3>
-                                <p class="card-desc">Dark chocolate in buttery pastry</p>
-                                <div class="card-footer">
-                                    <span class="price">₱200</span>
-                                    <button class="btn-add" data-product-id="5">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-card">
-                            <div class="card-image">
-                                <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=400&h=300&fit=crop" alt="Almond Danish">
-                                <span class="badge">New</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">Almond Danish</h3>
-                                <p class="card-desc">Sweet almond cream and flaky pastry</p>
-                                <div class="card-footer">
-                                    <span class="price">₱220</span>
-                                    <button class="btn-add" data-product-id="6">Add to Cart</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Populated by index.js from products.php -->
                     </div>
                 </div>
-                <button class="carousel-btn next">›</button>
+                <button class="carousel-btn next">&#8250;</button>
             </div>
-            <div class="carousel-dots"></div>
+            <div class="carousel-dots" id="carouselDots"></div>
         </div>
     </section>
 
@@ -176,73 +139,19 @@
     <section id="products" class="products">
         <div class="container">
             <h2 class="section-title">Daily Fresh Baked</h2>
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&h=400&fit=crop" alt="Croissants">
-                    </div>
-                    <div class="product-info">
-                        <h3>Croissants</h3>
-                        <p>Buttery, flaky layers perfected through traditional French technique</p>
-                        <span class="price">₱180</span>
-                        <button class="btn-order" data-product-id="4">Add to Order</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=500&h=400&fit=crop" alt="Sourdough">
-                    </div>
-                    <div class="product-info">
-                        <h3>Sourdough Loaf</h3>
-                        <p>Naturally fermented with a crispy crust and tangy, complex flavor</p>
-                        <span class="price">₱320</span>
-                        <button class="btn-order" data-product-id="7">Add to Order</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=400&fit=crop" alt="Seasonal Pastries">
-                    </div>
-                    <div class="product-info">
-                        <h3>Seasonal Pastries</h3>
-                        <p>Rotating selection featuring fresh, local ingredients</p>
-                        <span class="price">₱220</span>
-                        <button class="btn-order" data-product-id="2">Add to Order</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&h=400&fit=crop" alt="Baguettes">
-                    </div>
-                    <div class="product-info">
-                        <h3>Baguettes</h3>
-                        <p>Classic French bread with a golden crust and airy interior</p>
-                        <span class="price">₱160</span>
-                        <button class="btn-order" data-product-id="8">Add to Order</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&h=400&fit=crop" alt="Custom Cakes">
-                    </div>
-                    <div class="product-info">
-                        <h3>Custom Cakes</h3>
-                        <p>Beautifully decorated cakes for your special celebrations</p>
-                        <span class="price">From ₱1,800</span>
-                        <button class="btn-order">Request Quote</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&h=400&fit=crop" alt="Fruit Tarts">
-                    </div>
-                    <div class="product-info">
-                        <h3>Fruit Tarts</h3>
-                        <p>Delicate pastry cream topped with seasonal fresh fruits</p>
-                        <span class="price">₱260</span>
-                        <button class="btn-order" data-product-id="1">Add to Order</button>
-                    </div>
-                </div>
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="">All</button>
+                <button class="category-tab" data-category="bread">Bread</button>
+                <button class="category-tab" data-category="pastry">Pastries</button>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Skeleton loaders shown until API responds -->
+                <div class="product-card skeleton"></div>
+                <div class="product-card skeleton"></div>
+                <div class="product-card skeleton"></div>
+                <div class="product-card skeleton"></div>
+                <div class="product-card skeleton"></div>
+                <div class="product-card skeleton"></div>
             </div>
         </div>
     </section>
@@ -255,12 +164,12 @@
                     <h2>Partner with Golden Crust</h2>
                     <p>We supply premium artisan baked goods to cafes, restaurants, and retail partners throughout the region.</p>
                     <ul class="features">
-                        <li>✓ Daily fresh delivery</li>
-                        <li>✓ Custom product development</li>
-                        <li>✓ Flexible order minimums</li>
-                        <li>✓ Dedicated account support</li>
+                        <li>&#10003; Daily fresh delivery</li>
+                        <li>&#10003; Custom product development</li>
+                        <li>&#10003; Flexible order minimums</li>
+                        <li>&#10003; Dedicated account support</li>
                     </ul>
-                    <button class="btn-wholesale">Request Wholesale Information</button>
+                    <button class="btn-wholesale" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Request Wholesale Information</button>
                 </div>
                 <div class="bakeries-image">
                     <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=600&h=500&fit=crop" alt="Bakery">
@@ -285,7 +194,7 @@
                     </div>
                     <div class="info-item">
                         <h4>Contact</h4>
-                        <p>Phone: (555) 123-4567<br>Email: hello@goldencrust.com</p>
+                        <p>Phone: (555) 123-4567<br>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e363b3232311e3931323a3b303d2c2b2d2a703d3133">[email&#160;protected]</a></p>
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
@@ -293,7 +202,7 @@
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="text" name="subject" placeholder="Subject" required>
                     <textarea name="message" placeholder="Message" rows="5" required></textarea>
-                    <button type="submit" class="btn-submit">Send Message</button>
+                    <button type="submit" class="btn-submit" id="contactSubmitBtn">Send Message</button>
                 </form>
             </div>
         </div>
@@ -304,23 +213,24 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <h4>Golden Crust</h4>
-                    <p>Artisan bakery since 1985</p>
+                    <div class="footer-brand-name">Golden Crust</div>
+                    <p>Artisan bakery since 1985.<br>Crafted with passion, served with love.</p>
                 </div>
                 <div>
-                    <h4>Quick Links</h4>
+                    <h4>Navigate</h4>
                     <a href="#home">Home</a>
                     <a href="#about">About</a>
                     <a href="#products">Products</a>
+                    <a href="#contact">Contact</a>
                 </div>
                 <div>
                     <h4>Follow Us</h4>
-                    <a href="#">Facebook</a>
-                    <a href="#">Instagram</a>
-                    <a href="#">Twitter</a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener">Twitter</a>
                 </div>
             </div>
-            <p class="copyright">&copy; 2026 Golden Crust Bakery</p>
+            <p class="copyright">&copy; 2026 Golden Crust Bakery &mdash; All rights reserved.</p>
         </div>
     </footer>
 
@@ -328,13 +238,14 @@
     <div id="authModal" class="auth-modal">
         <div class="modal-backdrop"></div>
         <div class="auth-modal-container">
+
             <!-- Login Panel -->
             <div class="auth-panel login-panel active">
                 <div class="panel-left">
                     <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=800&fit=crop" alt="Bakery">
                     <div class="panel-overlay">
                         <div class="logo-circle">
-                            <span style="font-size: 40px;">🥐</span>
+                            <img src="img/logo1.png" alt="Golden Crust" class="modal-logo-img">
                         </div>
                         <h2>Welcome Back!</h2>
                         <p>To keep connected with us please login with your personal info</p>
@@ -377,6 +288,15 @@
                             <a href="#" class="forgot-link">Forgot Password?</a>
                         </div>
                         <button type="submit" class="submit-btn">LOGIN</button>
+                        <div class="admin-divider">
+                            <span>or</span>
+                        </div>
+                        <button type="button" class="btn-admin-login" id="openAdminLoginModal">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            Login as Admin
+                        </button>
                     </form>
                 </div>
             </div>
@@ -387,10 +307,10 @@
                     <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=600&h=800&fit=crop" alt="Bakery">
                     <div class="panel-overlay">
                         <div class="logo-circle">
-                            <span style="font-size: 40px;">🥐</span>
+                            <img src="img/logo1.png" alt="Golden Crust" class="modal-logo-img">
                         </div>
-                        <h2>Welcome Back!</h2>
-                        <p>To keep connected with us please login with your personal info</p>
+                        <h2>Hello, Friend!</h2>
+                        <p>Enter your personal details and start your journey with us</p>
                         <button class="switch-btn" data-switch="login">SIGN IN</button>
                     </div>
                 </div>
@@ -432,6 +352,67 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Admin Login Panel -->
+            <div class="auth-panel admin-panel">
+                <div class="panel-left">
+                    <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?w=600&h=800&fit=crop" alt="Admin">
+                    <div class="panel-overlay">
+                        <div class="logo-circle">
+                            <svg width="40" height="40" fill="white" viewBox="0 0 24 24">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h2>Admin Access</h2>
+                        <p>Secure login for authorized administrators only</p>
+                        <button class="switch-btn" data-switch="login">BACK TO LOGIN</button>
+                    </div>
+                </div>
+                <div class="panel-right">
+                    <button class="modal-close">&times;</button>
+                    <h2>Administrator Login</h2>
+                    <div class="admin-badge">
+                        <svg width="20" height="20" fill="#C87941" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        <span>Restricted Access</span>
+                    </div>
+                    <form id="adminLoginForm" class="auth-form">
+                        <div class="form-group">
+                            <div class="input-with-icon">
+                                <svg class="input-icon" width="18" height="18" fill="#C87941" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                <input type="text" name="admin_username" placeholder="Admin Username" required autocomplete="username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-with-icon">
+                                <svg class="input-icon" width="18" height="18" fill="#C87941" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                                <input type="email" name="admin_email" placeholder="Admin Email" required autocomplete="email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-with-icon">
+                                <svg class="input-icon" width="18" height="18" fill="#C87941" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                <input type="password" name="admin_password" placeholder="Admin Password" required autocomplete="current-password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-with-icon">
+                                <svg class="input-icon" width="18" height="18" fill="#C87941" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                                <input type="text" name="admin_code" placeholder="Security Code" required autocomplete="off" maxlength="6">
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn submit-btn-admin">LOGIN AS ADMIN</button>
+                        <p class="admin-notice">
+                            <svg width="14" height="14" fill="#e53935" viewBox="0 0 24 24">
+                                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                            </svg>
+                            For authorized personnel only. All login attempts are logged.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 

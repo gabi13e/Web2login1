@@ -17,9 +17,18 @@ async function checkLoginStatus() {
     try {
         const response = await fetch('check_session.php');
         const data = await response.json();
-        
+
         if (data.logged_in) {
             updateLoginButton(data.user.name);
+
+            // Load cart count badge
+            try {
+                const cartRes = await fetch('cart.php?action=get');
+                const cartData = await cartRes.json();
+                if (cartData.success && typeof updateCartBadge === 'function') {
+                    updateCartBadge(cartData.count);
+                }
+            } catch (e) { /* cart not critical on load */ }
         }
     } catch (error) {
         console.error('Session check error:', error);
@@ -42,13 +51,19 @@ async function logout() {
     try {
         const response = await fetch('logout.php');
         const data = await response.json();
-        
+
         if (data.success) {
             showNotification(data.message, 'success');
+
             const loginBtn = document.getElementById('openLoginModal');
             if (loginBtn) {
                 loginBtn.textContent = 'Login';
                 loginBtn.onclick = () => openModal('login');
+            }
+
+            // Clear cart badge
+            if (typeof updateCartBadge === 'function') {
+                updateCartBadge(0);
             }
         }
     } catch (error) {
@@ -56,7 +71,7 @@ async function logout() {
     }
 }
 
-// Open Login Modal
+// Open Login Modal button
 if (openLoginBtn) {
     openLoginBtn.addEventListener('click', () => {
         openModal('login');
@@ -67,7 +82,7 @@ if (openLoginBtn) {
 function openModal(type = 'login') {
     authModal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
+
     if (type === 'login') {
         loginPanel.classList.add('active');
         signupPanel.classList.remove('active');
@@ -102,46 +117,38 @@ document.addEventListener('keydown', (e) => {
 
 // Switch between login and signup with smooth transition
 switchBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const switchTo = this.dataset.switch;
-        const authContainer = document.querySelector('.auth-modal-container');
-        
-        // Add transitioning class for animation
-        authContainer.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-        
+
         if (switchTo === 'signup') {
-            // Animate out login panel
             loginPanel.style.opacity = '0';
             loginPanel.style.transform = 'translateX(-50px)';
-            
+
             setTimeout(() => {
                 loginPanel.classList.remove('active');
                 signupPanel.classList.add('active');
-                
-                // Animate in signup panel
+
                 signupPanel.style.opacity = '0';
                 signupPanel.style.transform = 'translateX(50px)';
-                
+
                 setTimeout(() => {
                     signupPanel.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                     signupPanel.style.opacity = '1';
                     signupPanel.style.transform = 'translateX(0)';
                 }, 50);
             }, 300);
-            
+
         } else {
-            // Animate out signup panel
             signupPanel.style.opacity = '0';
             signupPanel.style.transform = 'translateX(50px)';
-            
+
             setTimeout(() => {
                 signupPanel.classList.remove('active');
                 loginPanel.classList.add('active');
-                
-                // Animate in login panel
+
                 loginPanel.style.opacity = '0';
                 loginPanel.style.transform = 'translateX(-50px)';
-                
+
                 setTimeout(() => {
                     loginPanel.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                     loginPanel.style.opacity = '1';
@@ -149,8 +156,7 @@ switchBtns.forEach(btn => {
                 }, 50);
             }, 300);
         }
-        
-        // Reset transitions after animation
+
         setTimeout(() => {
             loginPanel.style.transition = '';
             signupPanel.style.transition = '';
@@ -161,51 +167,47 @@ switchBtns.forEach(btn => {
 });
 
 // ===============================================
-// FORM HANDLING WITH PHP
+// LOGIN FORM
 // ===============================================
-
-// Login Form
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const email = loginForm.querySelector('input[type="email"]').value;
         const password = loginForm.querySelector('input[type="password"]').value;
-        
-        // Validate inputs
+
         if (!email || !password) {
             showNotification('Please fill in all fields', 'error');
             return;
         }
-        
-        // Show loading
+
         const submitBtn = loginForm.querySelector('.submit-btn');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'LOGGING IN...';
         submitBtn.disabled = true;
-        
+
         try {
-            // Send login request to PHP backend
             const formData = new FormData();
             formData.append('email', email);
             formData.append('password', password);
-            
-            const response = await fetch('login.php', {
-                method: 'POST',
-                body: formData
-            });
-            
+
+            const response = await fetch('login.php', { method: 'POST', body: formData });
             const data = await response.json();
-            
+
             if (data.success) {
-                // Show success notification
                 showNotification(data.message, 'success');
-                
-                // Update UI for logged-in user
                 updateLoginButton(data.user.name);
-                
-                // Reset and close
+
+                // Load cart count after login
+                try {
+                    const cartRes = await fetch('cart.php?action=get');
+                    const cartData = await cartRes.json();
+                    if (cartData.success && typeof updateCartBadge === 'function') {
+                        updateCartBadge(cartData.count);
+                    }
+                } catch (e) { /* non-critical */ }
+
                 setTimeout(() => {
                     loginForm.reset();
                     submitBtn.textContent = originalText;
@@ -226,76 +228,67 @@ if (loginForm) {
     });
 }
 
-// Signup Form
+// ===============================================
+// SIGNUP FORM
+// ===============================================
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const name = signupForm.querySelector('input[placeholder="Name"]').value;
         const email = signupForm.querySelector('input[type="email"]').value;
         const password = signupForm.querySelector('input[type="password"]').value;
-        
-        // Validate inputs
+
         if (!name || !email || !password) {
             showNotification('Please fill in all fields', 'error');
             return;
         }
-        
-        // Validate email format
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             showNotification('Please enter a valid email address', 'error');
             return;
         }
-        
-        // Validate password length
+
         if (password.length < 6) {
             showNotification('Password must be at least 6 characters', 'error');
             return;
         }
-        
-        // Show loading
+
         const submitBtn = signupForm.querySelector('.submit-btn');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'CREATING...';
         submitBtn.disabled = true;
-        
+
         try {
-            // Send signup request to PHP backend
             const formData = new FormData();
             formData.append('name', name);
             formData.append('email', email);
             formData.append('password', password);
-            
-            const response = await fetch('signup.php', {
-                method: 'POST',
-                body: formData
-            });
-            
+
+            const response = await fetch('signup.php', { method: 'POST', body: formData });
             const data = await response.json();
-            
+
             if (data.success) {
-                // Show success notification
                 showNotification(data.message, 'success');
-                
-                // Switch to login after success
+
                 setTimeout(() => {
                     signupForm.reset();
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
-                    
-                    // Smoothly transition to login panel
+
+                    // Transition to login panel
                     signupPanel.style.opacity = '0';
                     signupPanel.style.transform = 'translateX(50px)';
-                    
+
                     setTimeout(() => {
                         signupPanel.classList.remove('active');
                         loginPanel.classList.add('active');
-                        
+
                         loginPanel.style.opacity = '0';
                         loginPanel.style.transform = 'translateX(-50px)';
-                        
+
                         setTimeout(() => {
                             loginPanel.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                             loginPanel.style.opacity = '1';
@@ -318,89 +311,128 @@ if (signupForm) {
 }
 
 // ===============================================
-// NOTIFICATION SYSTEM
+// SOCIAL LOGIN BUTTONS (placeholder)
 // ===============================================
-function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    const bgColor = type === 'success' 
-        ? 'linear-gradient(135deg, #4CAF50, #45a049)' 
-        : 'linear-gradient(135deg, #f44336, #e53935)';
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 90px;
-        right: 30px;
-        background: ${bgColor};
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        z-index: 11000;
-        animation: slideInRight 0.4s ease;
-        font-weight: 500;
-        max-width: 350px;
-        font-family: 'Montserrat', sans-serif;
-    `;
-    notification.textContent = message;
-    
-    // Add icon
-    const icon = document.createElement('span');
-    icon.style.cssText = 'margin-right: 10px; font-size: 18px;';
-    icon.textContent = type === 'success' ? '✓' : '✕';
-    notification.prepend(icon);
-    
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        @keyframes slideOutRight {
-            to {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.4s ease';
-        setTimeout(() => {
-            notification.remove();
-            style.remove();
-        }, 400);
-    }, 4000);
-}
-
-// Social login buttons (placeholder functionality)
 document.querySelectorAll('.social-btn').forEach(btn => {
-    btn.addEventListener('click', function(e) {
+    btn.addEventListener('click', function (e) {
         e.preventDefault();
-        const platform = this.classList.contains('facebook') ? 'Facebook' : 
-                        this.classList.contains('google') ? 'Google' : 'LinkedIn';
+        const platform = this.classList.contains('facebook') ? 'Facebook'
+            : this.classList.contains('google') ? 'Google' : 'LinkedIn';
         showNotification(`${platform} login coming soon!`, 'success');
     });
 });
 
-// Add hover effects to panels
-const panelLefts = document.querySelectorAll('.panel-left');
-panelLefts.forEach(panel => {
-    panel.addEventListener('mouseenter', function() {
+// Panel left hover effect
+document.querySelectorAll('.panel-left').forEach(panel => {
+    panel.addEventListener('mouseenter', function () {
         this.style.transform = 'scale(1.02)';
         this.style.transition = 'transform 0.3s ease';
     });
-    
-    panel.addEventListener('mouseleave', function() {
+    panel.addEventListener('mouseleave', function () {
         this.style.transform = 'scale(1)';
     });
 });
 
-console.log('🔐 Enhanced auth modal system with PHP backend ready!');
+console.log('🔐 Auth modal system ready!');
+
+// ===============================================
+// ADMIN LOGIN FUNCTIONALITY
+// ===============================================
+const adminPanel = document.querySelector('.admin-panel');
+
+// Open admin login when "Login as Admin" button clicked
+document.getElementById('openAdminLoginModal')?.addEventListener('click', () => {
+    // Hide login panel, show admin panel
+    loginPanel.classList.remove('active');
+    adminPanel.classList.add('active');
+});
+
+// Admin Login Form Handler
+const adminLoginForm = document.getElementById('adminLoginForm');
+if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = adminLoginForm.querySelector('input[name="admin_username"]').value;
+        const email = adminLoginForm.querySelector('input[name="admin_email"]').value;
+        const password = adminLoginForm.querySelector('input[name="admin_password"]').value;
+        const code = adminLoginForm.querySelector('input[name="admin_code"]').value;
+
+        // Validate all fields
+        if (!username || !email || !password || !code) {
+            showNotification('Please fill in all fields', 'error');
+            return;
+        }
+
+        // Validate email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showNotification('Please enter a valid email address', 'error');
+            return;
+        }
+
+        // Validate security code (must be 6 characters)
+        if (code.length !== 6) {
+            showNotification('Security code must be 6 characters', 'error');
+            return;
+        }
+
+        const submitBtn = adminLoginForm.querySelector('.submit-btn-admin');
+        const origText = submitBtn.textContent;
+        submitBtn.textContent = 'VERIFYING...';
+        submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('security_code', code);
+
+            // Send to admin_login.php
+            const response = await fetch('admin_login.php', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (data.success) {
+                showNotification('Admin access granted! Redirecting...', 'success');
+
+                // Redirect immediately — do not update the main nav button
+                setTimeout(() => {
+                    window.location.href = data.redirect || 'admin_dashboard.html';
+                }, 1000);
+            } else {
+                showNotification(data.message || 'Invalid admin credentials', 'error');
+                submitBtn.textContent = origText;
+                submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Admin login error:', error);
+            showNotification('Admin login failed. Please try again.', 'error');
+            submitBtn.textContent = origText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+// Update switch buttons to handle admin panel
+document.querySelectorAll('.switch-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const switchTo = this.dataset.switch;
+        const authContainer = document.querySelector('.auth-modal-container');
+        
+        // Hide all panels first
+        document.querySelectorAll('.auth-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+
+        // Show target panel
+        if (switchTo === 'signup') {
+            signupPanel.classList.add('active');
+        } else if (switchTo === 'login') {
+            loginPanel.classList.add('active');
+        } else if (switchTo === 'admin') {
+            adminPanel.classList.add('active');
+        }
+    });
+});
+
+console.log('🔐 Admin login system ready!');

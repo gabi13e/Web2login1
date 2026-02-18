@@ -129,16 +129,28 @@ body {
     background: linear-gradient(135deg, var(--orange), #D68A52);
     color: white;
     border: none;
-    padding: 12px 30px;
+    padding: 10px 20px;
     border-radius: 30px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(200, 121, 65, 0.3);
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.login-icon {
+    flex-shrink: 0;
+}
+
+.login-text {
+    line-height: 1;
 }
 
 .login-btn::before {
@@ -1226,12 +1238,23 @@ body {
     .panel-right {
         padding: 40px 30px;
     }
+    
+    /* Hide login text on mobile, show icon only */
+    .login-text {
+        display: none;
+    }
+    
+    .login-btn {
+        padding: 10px 12px;
+        min-width: 40px;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 480px) {
     .login-btn {
-        padding: 10px 20px;
-        font-size: 14px;
+        padding: 10px;
+        font-size: 13px;
     }
     
     .logo-img {

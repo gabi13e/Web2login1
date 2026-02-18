@@ -25,7 +25,7 @@ function getProducts($conn) {
         $stmt = $conn->prepare("SELECT * FROM products WHERE category = ? AND in_stock = 1 ORDER BY created_at DESC");
         $stmt->bind_param("s", $category);
     } else {
-        $stmt = $conn->prepare("SELECT * FROM products WHERE in_stock = 1 ORDER BY created_at DESC");
+        $stmt = $conn->prepare("SELECT * FROM products WHERE in_stock = 1 AND (archived = 0 OR archived IS NULL) ORDER BY created_at DESC");
     }
     
     $stmt->execute();

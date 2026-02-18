@@ -1,19 +1,31 @@
--- Create database
+-- =============================================
+-- GOLDEN CRUST BAKERY — FULL DATABASE SETUP
+-- =============================================
+
 CREATE DATABASE IF NOT EXISTS golden_crust_bakery;
 USE golden_crust_bakery;
 
--- Users table
+-- =============================================
+-- USERS TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role ENUM('customer', 'admin', 'user') DEFAULT 'customer',
+    security_code VARCHAR(6) DEFAULT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_email (email)
+    INDEX idx_email (email),
+    INDEX idx_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Products table
+-- =============================================
+-- PRODUCTS TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -21,14 +33,21 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     category VARCHAR(50),
     image_url VARCHAR(255),
+    hover_image_url VARCHAR(255),
+    featured_image_url VARCHAR(255),
     badge VARCHAR(50),
     in_stock BOOLEAN DEFAULT TRUE,
+    archived TINYINT(1) DEFAULT 0,
+    archived_at TIMESTAMP NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_category (category)
+    INDEX idx_category (category),
+    INDEX idx_archived (archived)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Orders table
+-- =============================================
+-- ORDERS TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -41,7 +60,9 @@ CREATE TABLE IF NOT EXISTS orders (
     INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Order items table
+-- =============================================
+-- ORDER ITEMS TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -55,7 +76,9 @@ CREATE TABLE IF NOT EXISTS order_items (
     INDEX idx_order_id (order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Contact messages table
+-- =============================================
+-- CONTACT MESSAGES TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -67,7 +90,9 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Cart table (for logged-in users)
+-- =============================================
+-- CART TABLE
+-- =============================================
 CREATE TABLE IF NOT EXISTS cart (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -81,13 +106,70 @@ CREATE TABLE IF NOT EXISTS cart (
     INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Insert sample products
-INSERT INTO products (name, description, price, category, image_url, badge) VALUES
-('Fruit Tart', 'Fresh seasonal fruits on pastry cream', 260.00, 'pastry', 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop', 'Seasonal'),
-('Chocolate Éclair', 'Choux pastry with chocolate glaze', 220.00, 'pastry', 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop', 'Classic'),
-('Apple Turnover', 'Caramelized apples in puff pastry', 190.00, 'pastry', 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&h=300&fit=crop', 'Traditional'),
-('Butter Croissant', 'Flaky, buttery layers with golden crust', 180.00, 'bread', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&h=300&fit=crop', 'Chef\'s Choice'),
-('Pain au Chocolat', 'Dark chocolate in buttery pastry', 200.00, 'pastry', 'https://images.unsplash.com/photo-1623334044303-241021148842?w=400&h=300&fit=crop', 'Popular'),
-('Almond Danish', 'Sweet almond cream and flaky pastry', 220.00, 'pastry', 'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=400&h=300&fit=crop', 'New'),
-('Sourdough Loaf', 'Naturally fermented with a crispy crust and tangy, complex flavor', 320.00, 'bread', 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=500&h=400&fit=crop', NULL),
-('Baguette', 'Classic French bread with a golden crust and airy interior', 160.00, 'bread', 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&h=400&fit=crop', NULL);
+-- =============================================
+-- SAMPLE PRODUCTS
+-- Replace image paths with your actual files
+-- image_url          → product card main image
+-- hover_image_url    → product card hover image
+-- featured_image_url → carousel/featured section
+-- =============================================
+INSERT INTO products (name, description, price, category, image_url, hover_image_url, featured_image_url, badge) VALUES
+('Fruit Tart',       'Fresh seasonal fruits on pastry cream',                     260.00, 'pastry', 'img/product-1.jpg', 'img/product-1-hover.jpg', 'img/featured-1.jpg', 'Seasonal'),
+('Chocolate Eclair', 'Choux pastry with chocolate glaze',                         220.00, 'pastry', 'img/product-2.jpg', 'img/product-2-hover.jpg', 'img/featured-2.jpg', 'Classic'),
+('Apple Turnover',   'Caramelized apples in puff pastry',                         190.00, 'pastry', 'img/product-3.jpg', 'img/product-3-hover.jpg', 'img/featured-3.jpg', 'Traditional'),
+('Butter Croissant', 'Flaky, buttery layers with golden crust',                   180.00, 'bread',  'img/product-4.jpg', 'img/product-4-hover.jpg', 'img/featured-4.jpg', 'Chef\'s Choice'),
+('Pain au Chocolat', 'Dark chocolate in buttery pastry',                          200.00, 'pastry', 'img/product-5.jpg', 'img/product-5-hover.jpg', 'img/featured-5.jpg', 'Popular'),
+('Almond Danish',    'Sweet almond cream and flaky pastry',                       220.00, 'pastry', 'img/product-6.jpg', 'img/product-6-hover.jpg', 'img/featured-6.jpg', 'New'),
+('Sourdough Loaf',   'Naturally fermented with a crispy crust and tangy flavor',  320.00, 'bread',  'img/product-7.jpg', 'img/product-7-hover.jpg', 'img/featured-7.jpg', NULL),
+('Baguette',         'Classic French bread with a golden crust and airy interior',160.00, 'bread',  'img/product-8.jpg', 'img/product-8-hover.jpg', 'img/featured-8.jpg', NULL),
+('Cinnamon Roll',    'Soft swirled pastry with cream cheese frosting',            210.00, 'pastry', 'img/product-9.jpg', 'img/product-9-hover.jpg', 'img/featured-9.jpg', 'Bestseller');
+
+-- =============================================
+-- DEFAULT ADMIN ACCOUNT
+-- =============================================
+-- Username:      admin
+-- Email:         admin@goldencrust.com
+-- Password:      Admin@123
+-- Security Code: GC2026
+-- =============================================
+INSERT INTO users (username, name, email, password, role, security_code, is_active) VALUES
+('admin', 'System Administrator', 'admin@goldencrust.com', '$2y$12$uokUTDq5XJPSfuruMXAhUe8QiP4rAlauSDt9QWVdICA8yZ91OoXmu', 'admin', 'GC2026', 1)
+ON DUPLICATE KEY UPDATE
+    password      = '$2y$12$uokUTDq5XJPSfuruMXAhUe8QiP4rAlauSDt9QWVdICA8yZ91OoXmu',
+    username      = 'admin',
+    role          = 'admin',
+    security_code = 'GC2026',
+    is_active     = 1;
+
+-- =============================================
+-- VERIFY ADMIN ACCOUNT
+-- =============================================
+SELECT id, username, name, email, role, security_code, is_active
+FROM users
+WHERE role = 'admin';
+
+-- =============================================
+-- FOR EXISTING DATABASES — run these ALTERs
+-- instead of the CREATE TABLE statements above
+-- =============================================
+/*
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS username      VARCHAR(50) UNIQUE AFTER id,
+  ADD COLUMN IF NOT EXISTS security_code VARCHAR(6)  DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS is_active     BOOLEAN     DEFAULT TRUE,
+  MODIFY COLUMN role ENUM('customer', 'admin', 'user') DEFAULT 'customer';
+
+ALTER TABLE users ADD INDEX IF NOT EXISTS idx_role (role);
+
+ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS hover_image_url    VARCHAR(255) DEFAULT NULL AFTER image_url,
+  ADD COLUMN IF NOT EXISTS featured_image_url VARCHAR(255) DEFAULT NULL AFTER hover_image_url,
+  ADD COLUMN IF NOT EXISTS archived           TINYINT(1)  DEFAULT 0        AFTER in_stock,
+  ADD COLUMN IF NOT EXISTS archived_at        TIMESTAMP   NULL DEFAULT NULL AFTER archived;
+
+UPDATE products SET
+    image_url          = CONCAT('img/product-',  id, '.jpg'),
+    hover_image_url    = CONCAT('img/product-',  id, '-hover.jpg'),
+    featured_image_url = CONCAT('img/featured-', id, '.jpg')
+WHERE image_url NOT LIKE 'img/product-%';
+*/
