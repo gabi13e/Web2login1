@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS products (
     hover_image_url VARCHAR(255),
     featured_image_url VARCHAR(255),
     badge VARCHAR(50),
+    quantity INT NOT NULL DEFAULT 0,
     in_stock BOOLEAN DEFAULT TRUE,
     archived TINYINT(1) DEFAULT 0,
     archived_at TIMESTAMP NULL DEFAULT NULL,
@@ -108,21 +109,20 @@ CREATE TABLE IF NOT EXISTS cart (
 
 -- =============================================
 -- SAMPLE PRODUCTS
--- Replace image paths with your actual files
 -- image_url          → product card main image
 -- hover_image_url    → product card hover image
--- featured_image_url → carousel/featured section
+-- featured_image_url → carousel/featured section (different image)
 -- =============================================
-INSERT INTO products (name, description, price, category, image_url, hover_image_url, featured_image_url, badge) VALUES
-('Fruit Tart',       'Fresh seasonal fruits on pastry cream',                     260.00, 'pastry', 'img/product-1.jpg', 'img/product-1-hover.jpg', 'img/featured-1.jpg', 'Seasonal'),
-('Chocolate Eclair', 'Choux pastry with chocolate glaze',                         220.00, 'pastry', 'img/product-2.jpg', 'img/product-2-hover.jpg', 'img/featured-2.jpg', 'Classic'),
-('Apple Turnover',   'Caramelized apples in puff pastry',                         190.00, 'pastry', 'img/product-3.jpg', 'img/product-3-hover.jpg', 'img/featured-3.jpg', 'Traditional'),
-('Butter Croissant', 'Flaky, buttery layers with golden crust',                   180.00, 'bread',  'img/product-4.jpg', 'img/product-4-hover.jpg', 'img/featured-4.jpg', 'Chef\'s Choice'),
-('Pain au Chocolat', 'Dark chocolate in buttery pastry',                          200.00, 'pastry', 'img/product-5.jpg', 'img/product-5-hover.jpg', 'img/featured-5.jpg', 'Popular'),
-('Almond Danish',    'Sweet almond cream and flaky pastry',                       220.00, 'pastry', 'img/product-6.jpg', 'img/product-6-hover.jpg', 'img/featured-6.jpg', 'New'),
-('Sourdough Loaf',   'Naturally fermented with a crispy crust and tangy flavor',  320.00, 'bread',  'img/product-7.jpg', 'img/product-7-hover.jpg', 'img/featured-7.jpg', NULL),
-('Baguette',         'Classic French bread with a golden crust and airy interior',160.00, 'bread',  'img/product-8.jpg', 'img/product-8-hover.jpg', 'img/featured-8.jpg', NULL),
-('Cinnamon Roll',    'Soft swirled pastry with cream cheese frosting',            210.00, 'pastry', 'img/product-9.jpg', 'img/product-9-hover.jpg', 'img/featured-9.jpg', 'Bestseller');
+INSERT IGNORE INTO products (name, description, price, category, image_url, hover_image_url, featured_image_url, badge, quantity) VALUES
+('Fruit Tart',       'Fresh seasonal fruits on pastry cream',                      260.00, 'pastry', 'img/product-1.png', 'img/product-1-hover.jpg', 'img/featured-1.jpg', 'Seasonal',       50),
+('Chocolate Eclair', 'Choux pastry with chocolate glaze',                          220.00, 'pastry', 'img/product-2.jpg', 'img/product-2-hover.jpg', 'img/featured-2.jpg', 'Classic',        50),
+('Apple Turnover',   'Caramelized apples in puff pastry',                          190.00, 'pastry', 'img/product-3.jpg', 'img/product-3-hover.jpg', 'img/featured-3.jpg', 'Traditional',    50),
+('Butter Croissant', 'Flaky, buttery layers with golden crust',                    180.00, 'bread',  'img/product-4.jpg', 'img/product-4-hover.jpg', 'img/featured-4.jpg', 'Chef\'s Choice',  50),
+('Pain au Chocolat', 'Dark chocolate in buttery pastry',                           200.00, 'pastry', 'img/product-5.jpg', 'img/product-5-hover.jpg', 'img/featured-5.jpg', 'Popular',        50),
+('Almond Danish',    'Sweet almond cream and flaky pastry',                        220.00, 'pastry', 'img/product-6.jpg', 'img/product-6-hover.jpg', 'img/featured-6.jpg', 'New',            50),
+('Sourdough Loaf',   'Naturally fermented with a crispy crust and tangy flavor',   320.00, 'bread',  'img/product-7.jpg', 'img/product-7-hover.jpg', 'img/featured-7.jpg', NULL,             50),
+('Baguette',         'Classic French bread with a golden crust and airy interior', 160.00, 'bread',  'img/product-8.jpg', 'img/product-8-hover.jpg', 'img/featured-8.jpg', NULL,             50),
+('Cinnamon Roll',    'Soft swirled pastry with cream cheese frosting',             210.00, 'pastry', 'img/product-9.jpg', 'img/product-9-hover.jpg', 'img/featured-9.jpg', 'Bestseller',     50);
 
 -- =============================================
 -- DEFAULT ADMIN ACCOUNT
@@ -164,6 +164,7 @@ ALTER TABLE users ADD INDEX IF NOT EXISTS idx_role (role);
 ALTER TABLE products
   ADD COLUMN IF NOT EXISTS hover_image_url    VARCHAR(255) DEFAULT NULL AFTER image_url,
   ADD COLUMN IF NOT EXISTS featured_image_url VARCHAR(255) DEFAULT NULL AFTER hover_image_url,
+  ADD COLUMN IF NOT EXISTS quantity           INT         NOT NULL DEFAULT 0 AFTER badge,
   ADD COLUMN IF NOT EXISTS archived           TINYINT(1)  DEFAULT 0        AFTER in_stock,
   ADD COLUMN IF NOT EXISTS archived_at        TIMESTAMP   NULL DEFAULT NULL AFTER archived;
 

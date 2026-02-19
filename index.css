@@ -1480,3 +1480,23 @@ body {
     .category-tab { flex: 1 0 auto; border-right: none; border-bottom: 1.5px solid var(--dark-brown); }
     .category-tab:last-child { border-bottom: none; }
 }
+
+/* ── OUT OF STOCK ─────────────────────────────── */
+.oos-badge {
+    background: #c0392b !important;
+    color: white !important;
+}
+
+.product-card.out-of-stock .product-image {
+    filter: grayscale(40%);
+    opacity: 0.85;
+}
+
+.btn-order.btn-oos,
+.btn-order[disabled] {
+    background: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+    border: none;
+    pointer-events: none;
+}

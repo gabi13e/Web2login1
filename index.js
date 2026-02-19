@@ -205,19 +205,84 @@ document.querySelector('.carousel-wrapper')?.addEventListener('touchend', e => {
 window.addEventListener('resize', updateCarousel);
 
 // ===============================================
-// FALLBACK PRODUCTS — uses your local img/ folder
-// Name your files: img/product-1.jpg, img/product-1-hover.jpg, etc.
+// FALLBACK PRODUCTS — Unsplash images matched to each product
+// featured_image_url  → shown in the Featured Carousel (tall/portrait crop)
+// image_url           → shown in the Products Grid (square crop)
+// hover_image_url     → hover state in the Products Grid
 // ===============================================
 const FALLBACK_PRODUCTS = [
-    { id:1, name:'Fruit Tart',        description:'Fresh seasonal fruits on pastry cream',                   price:'260.00', category:'pastry', image_url:'img/product-1.jpg', hover_image_url:'img/product-1-hover.jpg', featured_image_url:'img/featured-1.jpg', badge:'Seasonal'      },
-    { id:2, name:'Chocolate Éclair',  description:'Choux pastry with chocolate glaze',                       price:'220.00', category:'pastry', image_url:'img/product-2.jpg', hover_image_url:'img/product-2-hover.jpg', featured_image_url:'img/featured-2.jpg', badge:'Classic'       },
-    { id:3, name:'Apple Turnover',    description:'Caramelized apples in puff pastry',                       price:'190.00', category:'pastry', image_url:'img/product-3.jpg', hover_image_url:'img/product-3-hover.jpg', featured_image_url:'img/featured-3.jpg', badge:'Traditional'   },
-    { id:4, name:'Butter Croissant',  description:'Flaky, buttery layers with golden crust',                 price:'180.00', category:'bread',  image_url:'img/product-4.jpg', hover_image_url:'img/product-4-hover.jpg', featured_image_url:'img/featured-4.jpg', badge:"Chef's Choice" },
-    { id:5, name:'Pain au Chocolat',  description:'Dark chocolate in buttery pastry',                        price:'200.00', category:'pastry', image_url:'img/product-5.jpg', hover_image_url:'img/product-5-hover.jpg', featured_image_url:'img/featured-5.jpg', badge:'Popular'       },
-    { id:6, name:'Almond Danish',     description:'Sweet almond cream and flaky pastry',                     price:'220.00', category:'pastry', image_url:'img/product-6.jpg', hover_image_url:'img/product-6-hover.jpg', featured_image_url:'img/featured-6.jpg', badge:'New'           },
-    { id:7, name:'Sourdough Loaf',    description:'Naturally fermented with a crispy crust and tangy flavor', price:'320.00', category:'bread', image_url:'img/product-7.jpg', hover_image_url:'img/product-7-hover.jpg', featured_image_url:'img/featured-7.jpg', badge:null            },
-    { id:8, name:'Baguette',          description:'Classic French bread with a golden crust and airy interior',price:'160.00', category:'bread', image_url:'img/product-8.jpg', hover_image_url:'img/product-8-hover.jpg', featured_image_url:'img/featured-8.jpg', badge:null            },
-    { id:9, name:'Cinnamon Roll',     description:'Soft swirled pastry with cream cheese frosting',          price:'210.00', category:'pastry', image_url:'img/product-9.jpg', hover_image_url:'img/product-9-hover.jpg', featured_image_url:'img/featured-9.jpg', badge:'Bestseller'    },
+    {
+        id: 1, name: 'Fruit Tart', badge: 'Seasonal',
+        description: 'Fresh seasonal fruits on pastry cream',
+        price: '260.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=800&fit=crop',
+    },
+    {
+        id: 2, name: 'Chocolate Éclair', badge: 'Classic',
+        description: 'Choux pastry with chocolate glaze',
+        price: '220.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1567171466295-4afa63d45416?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1548365328-8c6db3220e4d?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1567171466295-4afa63d45416?w=600&h=800&fit=crop',
+    },
+    {
+        id: 3, name: 'Apple Turnover', badge: 'Traditional',
+        description: 'Caramelized apples in puff pastry',
+        price: '190.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1621955511865-e1fcb0cb3001?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1621955511865-e1fcb0cb3001?w=400&h=400&fit=crop&sat=-30',
+        featured_image_url: 'https://images.unsplash.com/photo-1621955511865-e1fcb0cb3001?w=600&h=800&fit=crop',
+    },
+    {
+        id: 4, name: 'Butter Croissant', badge: "Chef's Choice",
+        description: 'Flaky, buttery layers with golden crust',
+        price: '180.00', category: 'bread',
+        image_url:          'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&h=800&fit=crop',
+    },
+    {
+        id: 5, name: 'Pain au Chocolat', badge: 'Popular',
+        description: 'Dark chocolate in buttery pastry',
+        price: '200.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1548365328-8c6db3220e4d?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=600&h=800&fit=crop',
+    },
+    {
+        id: 6, name: 'Almond Danish', badge: 'New',
+        description: 'Sweet almond cream and flaky pastry',
+        price: '220.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1571066812040-4c4b8c82a59e?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=600&h=800&fit=crop',
+    },
+    {
+        id: 7, name: 'Sourdough Loaf', badge: null,
+        description: 'Naturally fermented with a crispy crust and tangy flavor',
+        price: '320.00', category: 'bread',
+        image_url:          'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600&h=800&fit=crop',
+    },
+    {
+        id: 8, name: 'Baguette', badge: null,
+        description: 'Classic French bread with a golden crust and airy interior',
+        price: '160.00', category: 'bread',
+        image_url:          'https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?w=600&h=800&fit=crop',
+    },
+    {
+        id: 9, name: 'Cinnamon Roll', badge: 'Bestseller',
+        description: 'Soft swirled pastry with cream cheese frosting',
+        price: '210.00', category: 'pastry',
+        image_url:          'https://images.unsplash.com/photo-1609765910012-dfc3a8f9e22f?w=400&h=400&fit=crop',
+        hover_image_url:    'https://images.unsplash.com/photo-1591985667794-3e8a15a6a6c5?w=400&h=400&fit=crop',
+        featured_image_url: 'https://images.unsplash.com/photo-1609765910012-dfc3a8f9e22f?w=600&h=800&fit=crop',
+    },
 ];
 
 // ===============================================
@@ -238,13 +303,11 @@ async function loadProducts(category = '') {
             renderProductGrid(data.products);
             if (!category) buildCarousel(data.products);
         } else {
-            // API worked but no products - use fallback
             console.warn('No products from API, using fallback data');
             useFallbackProducts(category);
         }
     } catch (err) {
         console.error('Products load error:', err);
-        // API failed - use fallback
         console.warn('API failed, using fallback data');
         useFallbackProducts(category);
     }
@@ -268,12 +331,14 @@ function renderProductGrid(products) {
         const card = document.createElement('div');
         card.className = 'product-card fade-in';
 
-        // Use hover image if available, otherwise fall back to same image
         const hoverSrc = p.hover_image_url || p.image_url;
+        const outOfStock = !p.in_stock || p.in_stock == 0;
+        if (outOfStock) card.classList.add('out-of-stock');
 
         card.innerHTML = `
             <div class="product-image">
-                ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+                ${p.badge && !outOfStock ? `<span class="product-badge">${p.badge}</span>` : ''}
+                ${outOfStock ? `<span class="product-badge oos-badge">Out of Stock</span>` : ''}
                 <img class="img-primary" src="${p.image_url}" alt="${p.name}" loading="lazy">
                 <img class="img-hover" src="${hoverSrc}" alt="${p.name} detail" loading="lazy">
             </div>
@@ -282,20 +347,24 @@ function renderProductGrid(products) {
                 <p class="product-meta">${p.description}</p>
                 <div class="product-row">
                     <span class="price">&#8369;${parseFloat(p.price).toFixed(2)}</span>
+                    ${!outOfStock ? `
                     <div class="qty-controls">
                         <button class="qty-circle dec" data-product-id="${p.id}">&#8722;</button>
                         <span class="qty-val">1</span>
                         <button class="qty-circle inc" data-product-id="${p.id}">&#43;</button>
-                    </div>
+                    </div>` : ''}
                 </div>
-                <button class="btn-order" data-product-id="${p.id}">Add to Cart</button>
+                <button class="btn-order ${outOfStock ? 'btn-oos' : ''}"
+                        data-product-id="${p.id}"
+                        ${outOfStock ? 'disabled' : ''}>
+                    ${outOfStock ? 'Out of Stock' : 'Add to Cart'}
+                </button>
             </div>
         `;
         grid.appendChild(card);
         requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), 50 + idx * 60));
     });
 
-    // Quantity controls with animations
     grid.querySelectorAll('.qty-circle').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -312,15 +381,13 @@ function renderProductGrid(products) {
 
             valEl.textContent = val;
             valEl.classList.remove('bump');
-            void valEl.offsetWidth; // reflow to restart animation
+            void valEl.offsetWidth;
             valEl.classList.add('bump');
         });
     });
 
-    // Add to Cart with ripple
-    grid.querySelectorAll('.btn-order').forEach(btn => {
+    grid.querySelectorAll('.btn-order:not([disabled])').forEach(btn => {
         btn.addEventListener('click', function (e) {
-            // ripple effect
             const rect = this.getBoundingClientRect();
             const circle = document.createElement('span');
             const size = Math.max(rect.width, rect.height);
@@ -400,7 +467,6 @@ document.querySelectorAll('.category-tab').forEach(tab => {
 // CART DRAWER
 // ===============================================
 document.getElementById('openCartDrawer')?.addEventListener('click', async () => {
-    // Check if user is logged in before opening cart
     try {
         const res = await fetch('check_session.php');
         const data = await res.json();
@@ -408,12 +474,10 @@ document.getElementById('openCartDrawer')?.addEventListener('click', async () =>
         if (data.logged_in) {
             openCart();
         } else {
-            // User not logged in - open login modal instead
             showNotification('Please login to view your cart', 'error');
             setTimeout(() => openModal('login'), 500);
         }
     } catch (err) {
-        // If session check fails, assume not logged in
         showNotification('Please login to view your cart', 'error');
         setTimeout(() => openModal('login'), 500);
     }

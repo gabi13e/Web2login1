@@ -5,525 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Golden Crust — Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --cream:      #F5EFE6;
-            --tan:        #E8DCC4;
-            --brown:      #8B6F47;
-            --dark-brown: #3C2A1C;
-            --orange:     #C87941;
-            --pink:       #F2C4CE;
-            --white:      #FFFFFF;
-            --black:      #111111;
-            --sidebar-w:  240px;
+            --cream: #F5EFE6; --tan: #E8DCC4; --brown: #8B6F47;
+            --dark-brown: #3C2A1C; --orange: #C87941; --sidebar-w: 240px;
         }
+        body { font-family: "DM Sans", sans-serif; background: var(--cream); color: var(--dark-brown); min-height: 100vh; }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--cream);
-            color: var(--dark-brown);
-            min-height: 100vh;
-        }
-
-        /* ── SIDEBAR ── */
-        .sidebar {
-            position: fixed;
-            top: 0; left: 0;
-            width: var(--sidebar-w);
-            height: 100vh;
-            background: var(--dark-brown);
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            overflow-y: auto;
-        }
-
-        .sidebar-logo {
-            padding: 32px 24px 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-logo-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            color: white;
-            letter-spacing: 1px;
-            line-height: 1;
-        }
-
-        .sidebar-logo-sub {
-            font-size: 9px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--orange);
-            margin-top: 4px;
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-            flex: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: rgba(255,255,255,0.5);
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 2px solid transparent;
-            text-decoration: none;
-        }
-
+        /* SIDEBAR */
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: var(--dark-brown); display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-logo { padding: 32px 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-logo-title { font-family: "Barlow Condensed", sans-serif; font-size: 22px; font-weight: 900; color: white; letter-spacing: 1px; }
+        .sidebar-logo-sub { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--orange); margin-top: 4px; }
+        .sidebar-nav { padding: 20px 0; flex: 1; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.5); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: all 0.2s; border-left: 2px solid transparent; text-decoration: none; }
         .nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.04); }
-
-        .nav-item.active {
-            color: white;
-            border-left-color: var(--orange);
-            background: rgba(200, 121, 65, 0.12);
-        }
-
+        .nav-item.active { color: white; border-left-color: var(--orange); background: rgba(200,121,65,0.12); }
         .nav-item svg { flex-shrink: 0; opacity: 0.7; }
         .nav-item.active svg { opacity: 1; }
-
-        .sidebar-footer {
-            padding: 20px 24px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .sidebar-admin-name {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-
-        .sidebar-admin-name span {
-            color: rgba(255,255,255,0.75);
-            display: block;
-            font-size: 13px;
-            letter-spacing: 0;
-            margin-bottom: 2px;
-        }
-
-        .btn-logout {
-            width: 100%;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: rgba(255,255,255,0.5);
-            padding: 9px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
+        .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-user-name { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 2px; }
+        .sidebar-user-sub { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 1px; margin-bottom: 12px; }
+        .btn-logout { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); padding: 9px; font-family: "DM Sans", sans-serif; font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { border-color: #e74c3c; color: #e74c3c; }
 
-        /* ── MAIN ── */
-        .main {
-            margin-left: var(--sidebar-w);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        /* MAIN */
+        .main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+        .topbar { background: white; border-bottom: 1px solid var(--tan); padding: 0 36px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-family: "Barlow Condensed", sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+        .topbar-right { font-size: 12px; color: var(--brown); }
+        .content { padding: 36px; flex: 1; }
 
-        .topbar {
-            background: white;
-            border-bottom: 1px solid var(--tan);
-            padding: 0 36px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .topbar-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: var(--dark-brown);
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 12px;
-            color: var(--brown);
-        }
-
-        .content {
-            padding: 36px;
-            flex: 1;
-        }
-
-        /* ── TOAST ── */
-        .toast {
-            position: fixed;
-            top: 24px; right: 24px;
-            padding: 14px 20px;
-            border-radius: 0;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-            z-index: 9999;
-            opacity: 0;
-            transform: translateY(-12px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-            max-width: 320px;
-        }
-
+        /* TOAST */
+        .toast { position: fixed; top: 24px; right: 24px; padding: 14px 20px; font-size: 12px; letter-spacing: 0.5px; font-weight: 500; z-index: 9999; opacity: 0; transform: translateY(-12px); transition: all 0.3s ease; pointer-events: none; max-width: 320px; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background: var(--dark-brown); color: white; }
-        .toast.error   { background: #c0392b; color: white; }
+        .toast.error { background: #c0392b; color: white; }
 
-        /* ── STATS ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
-            margin-bottom: 36px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 22px 20px;
-            border-top: 3px solid var(--tan);
-            transition: border-color 0.2s;
-        }
-
+        /* STATS */
+        .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 36px; }
+        .stat-card { background: white; padding: 22px 20px; border-top: 3px solid var(--tan); transition: border-color 0.2s; }
         .stat-card:hover { border-top-color: var(--orange); }
+        .stat-label { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--brown); margin-bottom: 10px; }
+        .stat-value { font-family: "Barlow Condensed", sans-serif; font-size: 36px; font-weight: 900; color: var(--dark-brown); line-height: 1; }
 
-        .stat-label {
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--brown);
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 36px;
-            font-weight: 900;
-            color: var(--dark-brown);
-            line-height: 1;
-        }
-
-        /* ── SECTIONS ── */
+        /* SECTIONS */
         .section { display: none; }
         .section.active { display: block; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .section-title { font-family: "Barlow Condensed", sans-serif; font-size: 28px; font-weight: 900; letter-spacing: 0.5px; }
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── TAB TOGGLE (active/archived) ── */
-        .tab-toggle {
-            display: flex;
-            border: 1.5px solid var(--tan);
-            overflow: hidden;
-        }
-
-        .tab-btn {
-            padding: 8px 20px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 500;
-            background: white;
-            border: none;
-            color: var(--brown);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
+        /* TAB TOGGLE */
+        .tab-toggle { display: flex; border: 1.5px solid var(--tan); overflow: hidden; }
+        .tab-btn { padding: 8px 20px; font-family: "DM Sans", sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; background: white; border: none; color: var(--brown); cursor: pointer; transition: all 0.2s; }
         .tab-btn.active { background: var(--dark-brown); color: white; }
 
-        /* ── BUTTONS ── */
-        .btn {
-            padding: 10px 22px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary   { background: var(--dark-brown); color: white; }
+        /* BUTTONS */
+        .btn { padding: 10px 22px; font-family: "DM Sans", sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--dark-brown); color: white; }
         .btn-primary:hover { background: var(--orange); }
-
-        .btn-danger    { background: transparent; color: #c0392b; border: 1px solid #c0392b; }
+        .btn-danger { background: transparent; color: #c0392b; border: 1px solid #c0392b; }
         .btn-danger:hover { background: #c0392b; color: white; }
-
-        .btn-success   { background: transparent; color: #27ae60; border: 1px solid #27ae60; }
+        .btn-success { background: transparent; color: #27ae60; border: 1px solid #27ae60; }
         .btn-success:hover { background: #27ae60; color: white; }
-
-        .btn-ghost     { background: transparent; color: var(--brown); border: 1px solid var(--tan); }
+        .btn-ghost { background: transparent; color: var(--brown); border: 1px solid var(--tan); }
         .btn-ghost:hover { border-color: var(--dark-brown); color: var(--dark-brown); }
-
         .btn-sm { padding: 6px 14px; font-size: 9px; }
 
-        /* ── TABLE ── */
+        /* TABLE */
         .table-wrap { background: white; overflow: hidden; }
-
         table { width: 100%; border-collapse: collapse; }
-
         thead { background: var(--cream); }
-
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--brown);
-            font-weight: 500;
-            border-bottom: 1px solid var(--tan);
-        }
-
-        td {
-            padding: 14px 16px;
-            font-size: 13px;
-            border-bottom: 1px solid var(--tan);
-            color: var(--dark-brown);
-        }
-
+        th { padding: 12px 16px; text-align: left; font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--brown); font-weight: 500; border-bottom: 1px solid var(--tan); }
+        td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--tan); color: var(--dark-brown); }
         tr:last-child td { border-bottom: none; }
         tbody tr:hover { background: #faf7f3; }
+        .empty-row td { text-align: center; padding: 48px; color: var(--brown); font-size: 12px; letter-spacing: 1px; }
 
-        .empty-row td {
-            text-align: center;
-            padding: 48px;
-            color: var(--brown);
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        /* ── BADGES ── */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            font-size: 9px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
+        /* BADGES */
+        .badge { display: inline-block; padding: 4px 10px; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
         .badge-pending    { background: #fef3e2; color: #d68910; }
         .badge-processing { background: #eaf4fc; color: #2980b9; }
         .badge-completed  { background: #eafaf1; color: #27ae60; }
         .badge-cancelled  { background: #fdf0f0; color: #c0392b; }
         .badge-admin      { background: rgba(200,121,65,0.12); color: var(--orange); }
         .badge-customer   { background: var(--cream); color: var(--brown); }
+        .badge-user       { background: var(--cream); color: var(--brown); }
         .badge-unread     { background: #fef3e2; color: #d68910; }
         .badge-read       { background: var(--cream); color: var(--brown); }
         .badge-replied    { background: #eafaf1; color: #27ae60; }
-        .badge-archived   { background: #fdf0f0; color: #c0392b; }
         .badge-instock    { background: #eafaf1; color: #27ae60; }
         .badge-outstock   { background: #fdf0f0; color: #c0392b; }
+        .badge-label      { background: var(--cream); color: var(--brown); }
+        .qty-low { color: #c0392b; font-weight: 600; }
+        .qty-ok  { color: var(--dark-brown); font-weight: 600; }
 
-        /* ── MODAL ── */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(17,17,17,0.55);
-            z-index: 500;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17,17,17,0.55); z-index: 500; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
-
-        .modal-box {
-            background: white;
-            width: 90%;
-            max-width: 580px;
-            max-height: 88vh;
-            overflow-y: auto;
-            padding: 36px;
-            animation: modalIn 0.2s ease;
-        }
-
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--tan);
-        }
-
-        .modal-head h3 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #ccc;
-            transition: color 0.2s;
-            line-height: 1;
-        }
-
+        .modal-box { background: white; width: 90%; max-width: 580px; max-height: 88vh; overflow-y: auto; padding: 36px; animation: modalIn 0.2s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--tan); }
+        .modal-head h3 { font-family: "Barlow Condensed", sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+        .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #ccc; transition: color 0.2s; line-height: 1; }
         .modal-close:hover { color: var(--orange); }
 
-        /* ── FORM ── */
+        /* FORM */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-full { grid-column: 1 / -1; }
-
         .form-group { margin-bottom: 16px; }
-
-        .form-group label {
-            display: block;
-            font-size: 9px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--brown);
-            margin-bottom: 7px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid var(--tan);
-            border-radius: 0;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            color: var(--dark-brown);
-            background: white;
-            transition: border-color 0.2s;
-            appearance: none;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--dark-brown);
-        }
-
+        .form-group label { display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--brown); margin-bottom: 7px; font-weight: 500; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--tan); border-radius: 0; font-family: "DM Sans", sans-serif; font-size: 13px; color: var(--dark-brown); background: white; transition: border-color 0.2s; appearance: none; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--dark-brown); }
         .form-group textarea { min-height: 90px; resize: vertical; }
-
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--brown);
-        }
-
+        .checkbox-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--brown); }
         .checkbox-row input { width: auto; accent-color: var(--dark-brown); }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--tan); }
 
-        .modal-footer {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--tan);
-        }
+        /* DETAIL */
+        .detail-row { display: flex; gap: 8px; margin-bottom: 14px; font-size: 13px; }
+        .detail-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--brown); min-width: 100px; padding-top: 2px; }
+        .detail-value { color: var(--dark-brown); }
 
-        /* ── ORDER DETAILS ── */
-        .detail-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-            font-size: 13px;
-        }
-
-        .detail-label {
-            font-size: 9px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--brown);
-            min-width: 100px;
-            padding-top: 2px;
-        }
-
-        .detail-value { color: var(--dark-brown); font-weight: 400; }
-
-        /* ── RECENT ORDERS TABLE inside dashboard ── */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 24px;
-        }
-
+        /* DASHBOARD */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
         .dash-panel { background: white; padding: 24px; }
-
-        .dash-panel-title {
-            font-size: 9px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--brown);
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--tan);
-        }
-
-        @media (max-width: 1100px) {
-            .stats-row { grid-template-columns: repeat(3, 1fr); }
-            .dashboard-grid { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .main { margin-left: 0; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .content { padding: 20px; }
-        }
+        .dash-panel-title { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--brown); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--tan); }
     </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <div class="sidebar-logo-title">Golden Crust</div>
@@ -552,152 +165,104 @@
         </a>
     </nav>
     <div class="sidebar-footer">
-        <div class="sidebar-admin-name">
-            <span id="sidebar-name">Administrator</span>
-            Logged in
-        </div>
+        <div class="sidebar-user-name" id="sidebar-name">Administrator</div>
+        <div class="sidebar-user-sub">Logged in</div>
         <button class="btn-logout" onclick="logout()">Sign Out</button>
     </div>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
     <div class="topbar">
         <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-right">
-            <span id="topbar-user">Loading...</span>
-        </div>
+        <div class="topbar-right" id="topbar-user">Loading...</div>
     </div>
-
     <div class="content">
-
-        <!-- TOAST -->
         <div class="toast" id="toast"></div>
 
-        <!-- ── DASHBOARD ── -->
+        <!-- DASHBOARD -->
         <div class="section active" id="section-dashboard">
             <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">Products</div>
-                    <div class="stat-value" id="s-products">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Customers</div>
-                    <div class="stat-value" id="s-customers">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Orders</div>
-                    <div class="stat-value" id="s-orders">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Revenue</div>
-                    <div class="stat-value" id="s-revenue" style="font-size:24px;">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Unread Msgs</div>
-                    <div class="stat-value" id="s-messages">—</div>
-                </div>
+                <div class="stat-card"><div class="stat-label">Products</div><div class="stat-value" id="s-products">—</div></div>
+                <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value" id="s-customers">—</div></div>
+                <div class="stat-card"><div class="stat-label">Orders</div><div class="stat-value" id="s-orders">—</div></div>
+                <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value" id="s-revenue" style="font-size:24px">—</div></div>
+                <div class="stat-card"><div class="stat-label">Unread Msgs</div><div class="stat-value" id="s-messages">—</div></div>
             </div>
-
             <div class="dashboard-grid">
                 <div class="dash-panel">
                     <div class="dash-panel-title">Recent Orders</div>
                     <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Customer</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
                         <tbody id="dash-orders"><tr class="empty-row"><td colspan="4">Loading…</td></tr></tbody>
                     </table>
                 </div>
                 <div class="dash-panel">
                     <div class="dash-panel-title">Quick Actions</div>
-                    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
                         <button class="btn btn-primary" onclick="navigate('products')">Manage Products</button>
-                        <button class="btn btn-ghost" onclick="navigate('orders')">View All Orders</button>
-                        <button class="btn btn-ghost" onclick="navigate('messages')">Check Messages</button>
+                        <button class="btn btn-ghost"   onclick="navigate('orders')">View All Orders</button>
+                        <button class="btn btn-ghost"   onclick="navigate('messages')">Check Messages</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ── PRODUCTS ── -->
+        <!-- PRODUCTS -->
         <div class="section" id="section-products">
             <div class="section-header">
                 <div class="section-title">Products</div>
-                <div style="display:flex;gap:10px;align-items:center;">
+                <div style="display:flex;gap:10px;align-items:center">
                     <div class="tab-toggle">
-                        <button class="tab-btn active" id="tab-active" onclick="switchProductTab('active')">Active</button>
-                        <button class="tab-btn" id="tab-archived" onclick="switchProductTab('archived')">Archived</button>
+                        <button class="tab-btn active" id="tab-active"   onclick="switchProductTab('active')">Active</button>
+                        <button class="tab-btn"        id="tab-archived" onclick="switchProductTab('archived')">Archived</button>
                     </div>
                     <button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button>
                 </div>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Badge</th><th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="products-tbody"><tr class="empty-row"><td colspan="7">Loading…</td></tr></tbody>
+                    <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Stock</th><th>Badge</th><th>Actions</th></tr></thead>
+                    <tbody id="products-tbody"><tr class="empty-row"><td colspan="8">Loading…</td></tr></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ── ORDERS ── -->
+        <!-- ORDERS -->
         <div class="section" id="section-orders">
-            <div class="section-header">
-                <div class="section-title">Orders</div>
-            </div>
+            <div class="section-header"><div class="section-title">Orders</div></div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-                    </thead>
+                    <thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                     <tbody id="orders-tbody"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ── USERS ── -->
+        <!-- USERS -->
         <div class="section" id="section-users">
-            <div class="section-header">
-                <div class="section-title">Users</div>
-            </div>
+            <div class="section-header"><div class="section-title">Users</div></div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
-                    </thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
                     <tbody id="users-tbody"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ── MESSAGES ── -->
+        <!-- MESSAGES -->
         <div class="section" id="section-messages">
-            <div class="section-header">
-                <div class="section-title">Messages</div>
-            </div>
+            <div class="section-header"><div class="section-title">Messages</div></div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-                    </thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                     <tbody id="messages-tbody"><tr class="empty-row"><td colspan="7">Loading…</td></tr></tbody>
                 </table>
             </div>
         </div>
-
-    </div><!-- /content -->
+    </div>
 </main>
 
-<!-- ── PRODUCT MODAL ── -->
+<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="modal-product">
     <div class="modal-box">
         <div class="modal-head">
@@ -721,16 +286,16 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Price (₱) *</label>
+                    <label>Price (PHP) *</label>
                     <input type="number" id="p-price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity *</label>
+                    <input type="number" id="p-quantity" min="0" value="0" required>
                 </div>
                 <div class="form-group">
                     <label>Badge</label>
                     <input type="text" id="p-badge" placeholder="e.g. New, Popular">
-                </div>
-                <div class="form-group form-full">
-                    <label>Description</label>
-                    <textarea id="p-description"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Main Image URL</label>
@@ -740,14 +305,18 @@
                     <label>Hover Image URL</label>
                     <input type="text" id="p-hover" placeholder="img/product-1-hover.jpg">
                 </div>
-                <div class="form-group form-full">
+                <div class="form-group">
                     <label>Featured Image URL</label>
                     <input type="text" id="p-featured" placeholder="img/featured-1.jpg">
                 </div>
                 <div class="form-group form-full">
+                    <label>Description</label>
+                    <textarea id="p-description"></textarea>
+                </div>
+                <div class="form-group form-full">
                     <div class="checkbox-row">
                         <input type="checkbox" id="p-instock" checked>
-                        <label for="p-instock" style="text-transform:none;letter-spacing:0;font-size:13px;margin:0;">In Stock</label>
+                        <label for="p-instock" style="text-transform:none;letter-spacing:0;font-size:13px;margin:0">In Stock</label>
                     </div>
                 </div>
             </div>
@@ -759,7 +328,7 @@
     </div>
 </div>
 
-<!-- ── ORDER MODAL ── -->
+<!-- ORDER MODAL -->
 <div class="modal-overlay" id="modal-order">
     <div class="modal-box">
         <div class="modal-head">
@@ -767,7 +336,7 @@
             <button class="modal-close" onclick="closeModal('modal-order')">&times;</button>
         </div>
         <div id="order-detail-body"></div>
-        <div class="form-group" style="margin-top:20px;">
+        <div class="form-group" style="margin-top:20px">
             <label>Update Status</label>
             <select id="order-status-select">
                 <option value="pending">Pending</option>
@@ -783,7 +352,7 @@
     </div>
 </div>
 
-<!-- ── MESSAGE MODAL ── -->
+<!-- MESSAGE MODAL -->
 <div class="modal-overlay" id="modal-message">
     <div class="modal-box">
         <div class="modal-head">
@@ -791,7 +360,7 @@
             <button class="modal-close" onclick="closeModal('modal-message')">&times;</button>
         </div>
         <div id="message-detail-body"></div>
-        <div class="form-group" style="margin-top:20px;">
+        <div class="form-group" style="margin-top:20px">
             <label>Update Status</label>
             <select id="message-status-select">
                 <option value="unread">Unread</option>
@@ -807,13 +376,10 @@
 </div>
 
 <script>
-const API = 'admin_dashboard.php';
-let currentOrderId   = null;
-let currentMessageId = null;
-let currentProductTab = 'active';
+const API = "admin_dashboard.php";
+let currentOrderId = null, currentMessageId = null, currentProductTab = "active";
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     await checkSession();
     await loadStats();
     setupNav();
@@ -821,374 +387,284 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function checkSession() {
     try {
-        const res  = await fetch('check_session.php');
+        const res = await fetch("check_session.php");
         const data = await res.json();
-        if (data.logged_in && data.user.role === 'admin') {
-            document.getElementById('topbar-user').textContent = `${data.user.name} · Admin`;
-            document.getElementById('sidebar-name').textContent = data.user.name;
-        } else {
-            window.location.href = 'index.html';
-        }
-    } catch(e) { window.location.href = 'index.html'; }
+        if (data.logged_in && data.user.role === "admin") {
+            document.getElementById("topbar-user").textContent  = data.user.name + " · Admin";
+            document.getElementById("sidebar-name").textContent = data.user.name;
+        } else { window.location.href = "index.html"; }
+    } catch(e) { window.location.href = "index.html"; }
 }
 
-// ── NAV ──
 function setupNav() {
-    document.querySelectorAll('.nav-item').forEach(el => {
-        el.addEventListener('click', e => {
-            e.preventDefault();
-            navigate(el.dataset.section);
-        });
+    document.querySelectorAll(".nav-item").forEach(el => {
+        el.addEventListener("click", e => { e.preventDefault(); navigate(el.dataset.section); });
     });
 }
 
 function navigate(section) {
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.section === section));
-    document.querySelectorAll('.section').forEach(el => el.classList.toggle('active', el.id === 'section-' + section));
-    document.getElementById('topbar-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
-
-    if (section === 'products') loadProducts();
-    if (section === 'orders')   loadOrders();
-    if (section === 'users')    loadUsers();
-    if (section === 'messages') loadMessages();
+    document.querySelectorAll(".nav-item").forEach(el => el.classList.toggle("active", el.dataset.section === section));
+    document.querySelectorAll(".section").forEach(el => el.classList.toggle("active", el.id === "section-" + section));
+    document.getElementById("topbar-title").textContent = section.charAt(0).toUpperCase() + section.slice(1);
+    if (section === "products") loadProducts();
+    if (section === "orders")   loadOrders();
+    if (section === "users")    loadUsers();
+    if (section === "messages") loadMessages();
 }
 
-// ── TOAST ──
-function toast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 3000);
+function toast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast " + type + " show";
+    setTimeout(() => t.classList.remove("show"), 3000);
 }
 
-// ── MODAL ──
-function openModal(id)  { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('active'); });
+function openModal(id)  { document.getElementById(id).classList.add("active"); }
+function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+document.querySelectorAll(".modal-overlay").forEach(o => {
+    o.addEventListener("click", e => { if (e.target === o) o.classList.remove("active"); });
 });
 
-// ── STATS ──
 async function loadStats() {
-    const fd = new FormData(); fd.append('action','get_stats');
-    const res  = await fetch(API, { method:'POST', body:fd });
-    const data = await res.json();
-    if (!data.success) return;
-    const s = data.stats;
-    document.getElementById('s-products').textContent  = s.products;
-    document.getElementById('s-customers').textContent = s.customers;
-    document.getElementById('s-orders').textContent    = s.orders;
-    document.getElementById('s-revenue').textContent   = '₱' + parseFloat(s.revenue || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
-    document.getElementById('s-messages').textContent  = s.pending_messages;
-
-    const tbody = document.getElementById('dash-orders');
-    if (s.recent_orders.length === 0) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No orders yet</td></tr>';
-    } else {
-        tbody.innerHTML = s.recent_orders.map(o => `
-            <tr>
-                <td>#${o.id}</td>
-                <td>${o.name || 'Guest'}</td>
-                <td>₱${parseFloat(o.total_amount).toFixed(2)}</td>
-                <td><span class="badge badge-${o.status}">${o.status}</span></td>
-            </tr>`).join('');
-    }
+    try {
+        const fd = new FormData(); fd.append("action","get_stats");
+        const res = await fetch(API, {method:"POST",body:fd});
+        const data = await res.json();
+        if (!data.success) return;
+        const s = data.stats;
+        document.getElementById("s-products").textContent  = s.products;
+        document.getElementById("s-customers").textContent = s.customers;
+        document.getElementById("s-orders").textContent    = s.orders;
+        document.getElementById("s-revenue").textContent   = "₱" + parseFloat(s.revenue||0).toLocaleString("en-PH",{minimumFractionDigits:2});
+        document.getElementById("s-messages").textContent  = s.pending_messages;
+        const tbody = document.getElementById("dash-orders");
+        if (!s.recent_orders || s.recent_orders.length === 0) {
+            tbody.innerHTML = "<tr class=\"empty-row\"><td colspan=\"4\">No orders yet</td></tr>";
+        } else {
+            tbody.innerHTML = s.recent_orders.map(o =>
+                "<tr><td style=\"color:var(--brown);font-size:11px\">#"+o.id+"</td><td>"+(o.name||"Guest")+"</td><td>₱"+parseFloat(o.total_amount).toFixed(2)+"</td><td><span class=\"badge badge-"+o.status+"\">"+o.status+"</span></td></tr>"
+            ).join("");
+        }
+    } catch(e) { console.error(e); }
 }
 
-// ── PRODUCTS ──
 function switchProductTab(tab) {
     currentProductTab = tab;
-    document.getElementById('tab-active').classList.toggle('active', tab === 'active');
-    document.getElementById('tab-archived').classList.toggle('active', tab === 'archived');
+    document.getElementById("tab-active").classList.toggle("active", tab === "active");
+    document.getElementById("tab-archived").classList.toggle("active", tab === "archived");
     loadProducts();
 }
 
 async function loadProducts() {
-    const action = currentProductTab === 'archived' ? 'get_archived_products' : 'get_products';
-    const fd = new FormData(); fd.append('action', action);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const action = currentProductTab === "archived" ? "get_archived_products" : "get_products";
+    const fd = new FormData(); fd.append("action", action);
+    const res = await fetch(API, {method:"POST",body:fd});
     const data = await res.json();
-    const tbody = document.getElementById('products-tbody');
-
-    if (!data.success || data.products.length === 0) {
-        tbody.innerHTML = `<tr class="empty-row"><td colspan="7">No ${currentProductTab} products found</td></tr>`;
+    const tbody = document.getElementById("products-tbody");
+    if (!data.success || !data.products || data.products.length === 0) {
+        tbody.innerHTML = "<tr class=\"empty-row\"><td colspan=\"8\">No " + currentProductTab + " products found</td></tr>";
         return;
     }
-
-    tbody.innerHTML = data.products.map(p => `
-        <tr>
-            <td style="color:var(--brown);font-size:11px">#${p.id}</td>
-            <td style="font-weight:500">${p.name}</td>
-            <td style="text-transform:capitalize">${p.category}</td>
-            <td>₱${parseFloat(p.price).toFixed(2)}</td>
-            <td><span class="badge ${p.in_stock ? 'badge-instock' : 'badge-outstock'}">${p.in_stock ? 'In Stock' : 'Out'}</span></td>
-            <td>${p.badge ? `<span class="badge badge-customer">${p.badge}</span>` : '<span style="color:#ccc">—</span>'}</td>
-            <td>
-                <div style="display:flex;gap:8px">
-                    ${currentProductTab === 'active'
-                        ? `<button class="btn btn-sm btn-ghost" onclick="editProduct(${p.id})">Edit</button>
-                           <button class="btn btn-sm btn-danger" onclick="archiveProduct(${p.id})">Archive</button>`
-                        : `<button class="btn btn-sm btn-success" onclick="restoreProduct(${p.id})">Restore</button>`
-                    }
-                </div>
-            </td>
-        </tr>`).join('');
+    tbody.innerHTML = data.products.map(p => {
+        const qty = parseInt(p.quantity) || 0;
+        const qtyClass = qty <= 5 ? "qty-low" : "qty-ok";
+        const qtyWarn  = qty > 0 && qty <= 5 ? " ⚠️" : "";
+        const actions  = currentProductTab === "active"
+            ? "<button class=\"btn btn-sm btn-ghost\" onclick=\"editProduct("+p.id+")\">Edit</button><button class=\"btn btn-sm btn-danger\" onclick=\"archiveProduct("+p.id+")\">Archive</button>"
+            : "<button class=\"btn btn-sm btn-success\" onclick=\"restoreProduct("+p.id+")\">Restore</button>";
+        return "<tr>" +
+            "<td style=\"color:var(--brown);font-size:11px\">#"+p.id+"</td>" +
+            "<td style=\"font-weight:500\">"+p.name+"</td>" +
+            "<td style=\"text-transform:capitalize\">"+p.category+"</td>" +
+            "<td>₱"+parseFloat(p.price).toFixed(2)+"</td>" +
+            "<td class=\""+qtyClass+"\">"+qty+qtyWarn+"</td>" +
+            "<td><span class=\"badge "+(p.in_stock?"badge-instock":"badge-outstock")+"\">"+(p.in_stock?"In Stock":"Out")+"</span></td>" +
+            "<td>"+(p.badge?"<span class=\"badge badge-label\">"+p.badge+"</span>":"<span style=\"color:#ccc\">—</span>")+"</td>" +
+            "<td><div style=\"display:flex;gap:8px\">"+actions+"</div></td>" +
+            "</tr>";
+    }).join("");
 }
 
 function openProductModal() {
-    document.getElementById('product-modal-title').textContent = 'Add Product';
-    document.getElementById('product-form').reset();
-    document.getElementById('p-id').value = '';
-    document.getElementById('p-instock').checked = true;
-    openModal('modal-product');
+    document.getElementById("product-modal-title").textContent = "Add Product";
+    document.getElementById("product-form").reset();
+    document.getElementById("p-id").value       = "";
+    document.getElementById("p-quantity").value = 0;
+    document.getElementById("p-instock").checked = true;
+    openModal("modal-product");
 }
 
 async function editProduct(id) {
-    const res  = await fetch(`${API}?action=get_product&id=${id}`);
+    const res = await fetch(API+"?action=get_product&id="+id);
     const data = await res.json();
-    if (!data.success) { toast('Failed to load product', 'error'); return; }
+    if (!data.success) { toast("Failed to load product","error"); return; }
     const p = data.product;
-    document.getElementById('product-modal-title').textContent = 'Edit Product';
-    document.getElementById('p-id').value          = p.id;
-    document.getElementById('p-name').value        = p.name;
-    document.getElementById('p-category').value    = p.category;
-    document.getElementById('p-price').value       = p.price;
-    document.getElementById('p-badge').value       = p.badge || '';
-    document.getElementById('p-description').value = p.description || '';
-    document.getElementById('p-image').value       = p.image_url || '';
-    document.getElementById('p-hover').value       = p.hover_image_url || '';
-    document.getElementById('p-featured').value    = p.featured_image_url || '';
-    document.getElementById('p-instock').checked   = !!p.in_stock;
-    openModal('modal-product');
+    document.getElementById("product-modal-title").textContent = "Edit Product";
+    document.getElementById("p-id").value          = p.id;
+    document.getElementById("p-name").value        = p.name;
+    document.getElementById("p-category").value    = p.category;
+    document.getElementById("p-price").value       = p.price;
+    document.getElementById("p-quantity").value    = p.quantity ?? 0;
+    document.getElementById("p-badge").value       = p.badge || "";
+    document.getElementById("p-description").value = p.description || "";
+    document.getElementById("p-image").value       = p.image_url || "";
+    document.getElementById("p-hover").value       = p.hover_image_url || "";
+    document.getElementById("p-featured").value    = p.featured_image_url || "";
+    document.getElementById("p-instock").checked   = !!p.in_stock;
+    openModal("modal-product");
 }
 
 async function saveProduct(e) {
     e.preventDefault();
-    const id = document.getElementById('p-id').value;
+    const id = document.getElementById("p-id").value;
     const fd = new FormData();
-    fd.append('action',            id ? 'update_product' : 'create_product');
-    fd.append('id',                id || 0);
-    fd.append('name',              document.getElementById('p-name').value);
-    fd.append('description',       document.getElementById('p-description').value);
-    fd.append('price',             document.getElementById('p-price').value);
-    fd.append('category',          document.getElementById('p-category').value);
-    fd.append('image_url',         document.getElementById('p-image').value);
-    fd.append('hover_image_url',   document.getElementById('p-hover').value);
-    fd.append('featured_image_url',document.getElementById('p-featured').value);
-    fd.append('badge',             document.getElementById('p-badge').value);
-    if (document.getElementById('p-instock').checked) fd.append('in_stock', '1');
-
-    const res  = await fetch(API, { method:'POST', body:fd });
+    fd.append("action",             id ? "update_product" : "create_product");
+    fd.append("id",                 id || 0);
+    fd.append("name",               document.getElementById("p-name").value);
+    fd.append("description",        document.getElementById("p-description").value);
+    fd.append("price",              document.getElementById("p-price").value);
+    fd.append("category",           document.getElementById("p-category").value);
+    fd.append("quantity",           document.getElementById("p-quantity").value || 0);
+    fd.append("image_url",          document.getElementById("p-image").value);
+    fd.append("hover_image_url",    document.getElementById("p-hover").value);
+    fd.append("featured_image_url", document.getElementById("p-featured").value);
+    fd.append("badge",              document.getElementById("p-badge").value);
+    if (document.getElementById("p-instock").checked) fd.append("in_stock","1");
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    if (data.success) {
-        toast(data.message);
-        closeModal('modal-product');
-        loadProducts();
-        loadStats();
-    } else {
-        toast(data.message, 'error');
-    }
+    if (data.success) { toast(data.message); closeModal("modal-product"); loadProducts(); loadStats(); }
+    else toast(data.message,"error");
 }
 
 async function archiveProduct(id) {
-    if (!confirm('Archive this product? It will be hidden from the store but kept in the database.')) return;
-    const fd = new FormData(); fd.append('action','delete_product'); fd.append('id', id);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    if (!confirm("Archive this product? It will be hidden from the store.")) return;
+    const fd = new FormData(); fd.append("action","delete_product"); fd.append("id",id);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    data.success ? (toast(data.message), loadProducts(), loadStats()) : toast(data.message, 'error');
+    data.success ? (toast(data.message),loadProducts(),loadStats()) : toast(data.message,"error");
 }
 
 async function restoreProduct(id) {
-    const fd = new FormData(); fd.append('action','restore_product'); fd.append('id', id);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","restore_product"); fd.append("id",id);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    data.success ? (toast(data.message), loadProducts()) : toast(data.message, 'error');
+    data.success ? (toast(data.message),loadProducts()) : toast(data.message,"error");
 }
 
-// ── ORDERS ──
 async function loadOrders() {
-    const fd = new FormData(); fd.append('action','get_orders');
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","get_orders");
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    const tbody = document.getElementById('orders-tbody');
-
-    if (!data.success || data.orders.length === 0) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No orders found</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = data.orders.map(o => `
-        <tr>
-            <td style="color:var(--brown);font-size:11px">#${o.id}</td>
-            <td>${o.user_name || 'Guest'}</td>
-            <td>₱${parseFloat(o.total_amount).toFixed(2)}</td>
-            <td><span class="badge badge-${o.status}">${o.status}</span></td>
-            <td style="color:var(--brown);font-size:12px">${new Date(o.created_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'})}</td>
-            <td>
-                <div style="display:flex;gap:8px">
-                    <button class="btn btn-sm btn-ghost" onclick="viewOrder(${o.id})">View</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteOrder(${o.id})">Delete</button>
-                </div>
-            </td>
-        </tr>`).join('');
+    const tbody = document.getElementById("orders-tbody");
+    if (!data.success || !data.orders || data.orders.length === 0) { tbody.innerHTML = "<tr class=\"empty-row\"><td colspan=\"6\">No orders found</td></tr>"; return; }
+    tbody.innerHTML = data.orders.map(o =>
+        "<tr>" +
+        "<td style=\"color:var(--brown);font-size:11px\">#"+o.id+"</td>" +
+        "<td>"+(o.user_name||"Guest")+"</td>" +
+        "<td>₱"+parseFloat(o.total_amount).toFixed(2)+"</td>" +
+        "<td><span class=\"badge badge-"+o.status+"\">"+o.status+"</span></td>" +
+        "<td style=\"color:var(--brown);font-size:12px\">"+new Date(o.created_at).toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"})+"</td>" +
+        "<td><div style=\"display:flex;gap:8px\"><button class=\"btn btn-sm btn-ghost\" onclick=\"viewOrder("+o.id+")\">View</button><button class=\"btn btn-sm btn-danger\" onclick=\"deleteOrder("+o.id+")\">Delete</button></div></td>" +
+        "</tr>"
+    ).join("");
 }
 
 async function viewOrder(id) {
-    const res  = await fetch(`${API}?action=get_order&id=${id}`);
+    const res = await fetch(API+"?action=get_order&id="+id);
     const data = await res.json();
-    if (!data.success) { toast('Failed to load order', 'error'); return; }
+    if (!data.success) { toast("Failed to load order","error"); return; }
     const o = data.order;
-
-    const itemRows = o.items.map(i => `
-        <tr>
-            <td>${i.product_name}</td>
-            <td style="text-align:center">${i.quantity}</td>
-            <td>₱${parseFloat(i.price).toFixed(2)}</td>
-            <td>₱${(i.quantity * i.price).toFixed(2)}</td>
-        </tr>`).join('');
-
-    document.getElementById('order-detail-body').innerHTML = `
-        <div class="detail-row"><span class="detail-label">Order ID</span><span class="detail-value">#${o.id}</span></div>
-        <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value">${o.user_name || 'Guest'} · ${o.email || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">Total</span><span class="detail-value" style="color:var(--orange);font-weight:600">₱${parseFloat(o.total_amount).toFixed(2)}</span></div>
-        <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="badge badge-${o.status}">${o.status}</span></span></div>
-        <div style="margin-top:16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brown);margin-bottom:8px">Items</div>
-        <table style="font-size:12px">
-            <thead><tr><th>Product</th><th style="text-align:center">Qty</th><th>Price</th><th>Total</th></tr></thead>
-            <tbody>${itemRows}</tbody>
-        </table>`;
-
-    document.getElementById('order-status-select').value = o.status;
+    document.getElementById("order-detail-body").innerHTML =
+        "<div class=\"detail-row\"><span class=\"detail-label\">Order ID</span><span class=\"detail-value\">#"+o.id+"</span></div>" +
+        "<div class=\"detail-row\"><span class=\"detail-label\">Customer</span><span class=\"detail-value\">"+(o.user_name||"Guest")+" · "+(o.email||"N/A")+"</span></div>" +
+        "<div class=\"detail-row\"><span class=\"detail-label\">Total</span><span class=\"detail-value\" style=\"color:var(--orange);font-weight:600\">₱"+parseFloat(o.total_amount).toFixed(2)+"</span></div>" +
+        "<div class=\"detail-row\"><span class=\"detail-label\">Status</span><span class=\"detail-value\"><span class=\"badge badge-"+o.status+"\">"+o.status+"</span></span></div>" +
+        "<div style=\"margin-top:16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brown);margin-bottom:8px\">Items</div>" +
+        "<table style=\"font-size:12px\"><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>" +
+        (o.items||[]).map(i => "<tr><td>"+i.product_name+"</td><td>"+i.quantity+"</td><td>₱"+parseFloat(i.price).toFixed(2)+"</td><td>₱"+(i.quantity*i.price).toFixed(2)+"</td></tr>").join("") +
+        "</tbody></table>";
+    document.getElementById("order-status-select").value = o.status;
     currentOrderId = o.id;
-    openModal('modal-order');
+    openModal("modal-order");
 }
 
 async function saveOrderStatus() {
     if (!currentOrderId) return;
-    const fd = new FormData();
-    fd.append('action', 'update_order_status');
-    fd.append('id', currentOrderId);
-    fd.append('status', document.getElementById('order-status-select').value);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","update_order_status"); fd.append("id",currentOrderId); fd.append("status",document.getElementById("order-status-select").value);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    if (data.success) { toast(data.message); closeModal('modal-order'); loadOrders(); loadStats(); }
-    else toast(data.message, 'error');
+    data.success ? (toast(data.message),closeModal("modal-order"),loadOrders(),loadStats()) : toast(data.message,"error");
 }
 
 async function deleteOrder(id) {
-    if (!confirm('Delete this order permanently?')) return;
-    const fd = new FormData(); fd.append('action','delete_order'); fd.append('id', id);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    if (!confirm("Delete this order permanently?")) return;
+    const fd = new FormData(); fd.append("action","delete_order"); fd.append("id",id);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    data.success ? (toast(data.message), loadOrders(), loadStats()) : toast(data.message, 'error');
+    data.success ? (toast(data.message),loadOrders(),loadStats()) : toast(data.message,"error");
 }
 
-// ── USERS ──
 async function loadUsers() {
-    const fd = new FormData(); fd.append('action','get_users');
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","get_users");
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    const tbody = document.getElementById('users-tbody');
-
-    if (!data.success || data.users.length === 0) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No users found</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = data.users.map(u => `
-        <tr>
-            <td style="color:var(--brown);font-size:11px">#${u.id}</td>
-            <td style="font-weight:500">${u.name}</td>
-            <td style="color:var(--brown)">${u.email}</td>
-            <td><span class="badge badge-${u.role}">${u.role}</span></td>
-            <td style="color:var(--brown);font-size:12px">${new Date(u.created_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'})}</td>
-            <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">Delete</button>
-            </td>
-        </tr>`).join('');
+    const tbody = document.getElementById("users-tbody");
+    if (!data.success || !data.users || data.users.length === 0) { tbody.innerHTML = "<tr class=\"empty-row\"><td colspan=\"6\">No users found</td></tr>"; return; }
+    tbody.innerHTML = data.users.map(u =>
+        "<tr><td style=\"color:var(--brown);font-size:11px\">#"+u.id+"</td><td style=\"font-weight:500\">"+u.name+"</td><td style=\"color:var(--brown)\">"+u.email+"</td><td><span class=\"badge badge-"+u.role+"\">"+u.role+"</span></td><td style=\"color:var(--brown);font-size:12px\">"+new Date(u.created_at).toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"})+"</td><td><button class=\"btn btn-sm btn-danger\" onclick=\"deleteUser("+u.id+")\">Delete</button></td></tr>"
+    ).join("");
 }
 
 async function deleteUser(id) {
-    if (!confirm('Delete this user permanently?')) return;
-    const fd = new FormData(); fd.append('action','delete_user'); fd.append('id', id);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    if (!confirm("Delete this user permanently?")) return;
+    const fd = new FormData(); fd.append("action","delete_user"); fd.append("id",id);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    data.success ? (toast(data.message), loadUsers()) : toast(data.message, 'error');
+    data.success ? (toast(data.message),loadUsers()) : toast(data.message,"error");
 }
 
-// ── MESSAGES ──
 async function loadMessages() {
-    const fd = new FormData(); fd.append('action','get_messages');
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","get_messages");
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    const tbody = document.getElementById('messages-tbody');
-
-    if (!data.success || data.messages.length === 0) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No messages found</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = data.messages.map(m => `
-        <tr>
-            <td style="color:var(--brown);font-size:11px">#${m.id}</td>
-            <td style="font-weight:500">${m.name}</td>
-            <td style="color:var(--brown)">${m.email}</td>
-            <td>${m.subject}</td>
-            <td><span class="badge badge-${m.status}">${m.status}</span></td>
-            <td style="color:var(--brown);font-size:12px">${new Date(m.created_at).toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'})}</td>
-            <td>
-                <div style="display:flex;gap:8px">
-                    <button class="btn btn-sm btn-ghost" onclick="viewMessage(${m.id})">View</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteMessage(${m.id})">Delete</button>
-                </div>
-            </td>
-        </tr>`).join('');
+    const tbody = document.getElementById("messages-tbody");
+    if (!data.success || !data.messages || data.messages.length === 0) { tbody.innerHTML = "<tr class=\"empty-row\"><td colspan=\"7\">No messages found</td></tr>"; return; }
+    tbody.innerHTML = data.messages.map(m =>
+        "<tr><td style=\"color:var(--brown);font-size:11px\">#"+m.id+"</td><td style=\"font-weight:500\">"+m.name+"</td><td style=\"color:var(--brown)\">"+m.email+"</td><td>"+m.subject+"</td><td><span class=\"badge badge-"+m.status+"\">"+m.status+"</span></td><td style=\"color:var(--brown);font-size:12px\">"+new Date(m.created_at).toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"})+"</td><td><div style=\"display:flex;gap:8px\"><button class=\"btn btn-sm btn-ghost\" onclick=\"viewMessage("+m.id+")\">View</button><button class=\"btn btn-sm btn-danger\" onclick=\"deleteMessage("+m.id+")\">Delete</button></div></td></tr>"
+    ).join("");
 }
 
 async function viewMessage(id) {
-    const fd = new FormData(); fd.append('action','get_messages');
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","get_messages");
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    const m = data.messages.find(x => x.id === id);
-    if (!m) { toast('Message not found', 'error'); return; }
-
-    document.getElementById('message-detail-body').innerHTML = `
-        <div class="detail-row"><span class="detail-label">From</span><span class="detail-value">${m.name} · ${m.email}</span></div>
-        <div class="detail-row"><span class="detail-label">Subject</span><span class="detail-value" style="font-weight:500">${m.subject}</span></div>
-        <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value" style="color:var(--brown);font-size:12px">${new Date(m.created_at).toLocaleString('en-PH')}</span></div>
-        <div style="margin-top:16px;padding:16px;background:var(--cream);font-size:13px;line-height:1.7;color:var(--dark-brown)">${m.message}</div>`;
-
-    document.getElementById('message-status-select').value = m.status;
+    const m = data.messages.find(x => x.id == id);
+    if (!m) { toast("Message not found","error"); return; }
+    document.getElementById("message-detail-body").innerHTML =
+        "<div class=\"detail-row\"><span class=\"detail-label\">From</span><span class=\"detail-value\">"+m.name+" · "+m.email+"</span></div>" +
+        "<div class=\"detail-row\"><span class=\"detail-label\">Subject</span><span class=\"detail-value\" style=\"font-weight:500\">"+m.subject+"</span></div>" +
+        "<div style=\"margin-top:16px;padding:16px;background:var(--cream);font-size:13px;line-height:1.7\">"+m.message+"</div>";
+    document.getElementById("message-status-select").value = m.status;
     currentMessageId = m.id;
-    openModal('modal-message');
+    openModal("modal-message");
 }
 
 async function saveMessageStatus() {
     if (!currentMessageId) return;
-    const fd = new FormData();
-    fd.append('action','update_message_status');
-    fd.append('id', currentMessageId);
-    fd.append('status', document.getElementById('message-status-select').value);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    const fd = new FormData(); fd.append("action","update_message_status"); fd.append("id",currentMessageId); fd.append("status",document.getElementById("message-status-select").value);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    if (data.success) { toast(data.message); closeModal('modal-message'); loadMessages(); loadStats(); }
-    else toast(data.message, 'error');
+    data.success ? (toast(data.message),closeModal("modal-message"),loadMessages(),loadStats()) : toast(data.message,"error");
 }
 
 async function deleteMessage(id) {
-    if (!confirm('Delete this message permanently?')) return;
-    const fd = new FormData(); fd.append('action','delete_message'); fd.append('id', id);
-    const res  = await fetch(API, { method:'POST', body:fd });
+    if (!confirm("Delete this message permanently?")) return;
+    const fd = new FormData(); fd.append("action","delete_message"); fd.append("id",id);
+    const res = await fetch(API,{method:"POST",body:fd});
     const data = await res.json();
-    data.success ? (toast(data.message), loadMessages()) : toast(data.message, 'error');
+    data.success ? (toast(data.message),loadMessages()) : toast(data.message,"error");
 }
 
-// ── LOGOUT ──
-async function logout() {
-    await fetch('logout.php');
-    window.location.href = 'index.html';
-}
+async function logout() { await fetch("logout.php"); window.location.href = "index.html"; }
 </script>
 </body>
 </html>

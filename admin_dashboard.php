@@ -120,23 +120,26 @@ function getProduct($conn) {
 }
 
 function createProduct($conn) {
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $price = floatval($_POST['price'] ?? 0);
-    $category = trim($_POST['category'] ?? '');
-    $image_url = trim($_POST['image_url'] ?? '');
-    $hover_image_url = trim($_POST['hover_image_url'] ?? '');
+    $name               = trim($_POST['name'] ?? '');
+    $description        = trim($_POST['description'] ?? '');
+    $price              = floatval($_POST['price'] ?? 0);
+    $category           = trim($_POST['category'] ?? '');
+    $image_url          = trim($_POST['image_url'] ?? '');
+    $hover_image_url    = trim($_POST['hover_image_url'] ?? '');
     $featured_image_url = trim($_POST['featured_image_url'] ?? '');
-    $badge = trim($_POST['badge'] ?? '') ?: null;
-    $in_stock = isset($_POST['in_stock']) ? 1 : 0;
+    $badge              = trim($_POST['badge'] ?? '') ?: null;
+    $quantity           = intval($_POST['quantity'] ?? 0);
+
+    // FIX: in_stock is always derived from quantity only
+    $in_stock = ($quantity > 0) ? 1 : 0;
 
     if (empty($name) || empty($category) || $price <= 0) {
         echo json_encode(['success' => false, 'message' => 'Invalid product data']);
         return;
     }
 
-    $stmt = $conn->prepare("INSERT INTO products (name, description, price, category, image_url, hover_image_url, featured_image_url, badge, in_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdsssssi", $name, $description, $price, $category, $image_url, $hover_image_url, $featured_image_url, $badge, $in_stock);
+    $stmt = $conn->prepare("INSERT INTO products (name, description, price, category, image_url, hover_image_url, featured_image_url, badge, quantity, in_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssdsssssii", $name, $description, $price, $category, $image_url, $hover_image_url, $featured_image_url, $badge, $quantity, $in_stock);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Product created successfully', 'id' => $conn->insert_id]);
@@ -146,27 +149,33 @@ function createProduct($conn) {
 }
 
 function updateProduct($conn) {
-    $id = intval($_POST['id'] ?? 0);
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $price = floatval($_POST['price'] ?? 0);
-    $category = trim($_POST['category'] ?? '');
-    $image_url = trim($_POST['image_url'] ?? '');
-    $hover_image_url = trim($_POST['hover_image_url'] ?? '');
+    $id                 = intval($_POST['id'] ?? 0);
+    $name               = trim($_POST['name'] ?? '');
+    $description        = trim($_POST['description'] ?? '');
+    $price              = floatval($_POST['price'] ?? 0);
+    $category           = trim($_POST['category'] ?? '');
+    $image_url          = trim($_POST['image_url'] ?? '');
+    $hover_image_url    = trim($_POST['hover_image_url'] ?? '');
     $featured_image_url = trim($_POST['featured_image_url'] ?? '');
-    $badge = trim($_POST['badge'] ?? '') ?: null;
-    $in_stock = isset($_POST['in_stock']) ? 1 : 0;
+    $badge              = trim($_POST['badge'] ?? '') ?: null;
+    $quantity           = intval($_POST['quantity'] ?? 0);
+
+    // FIX: in_stock is always derived from quantity only — no more checkbox confusion
+    $in_stock = ($quantity > 0) ? 1 : 0;
 
     if (empty($name) || empty($category) || $price <= 0) {
         echo json_encode(['success' => false, 'message' => 'Invalid product data']);
         return;
     }
 
-    $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=?, category=?, image_url=?, hover_image_url=?, featured_image_url=?, badge=?, in_stock=? WHERE id=?");
-    $stmt->bind_param("ssdssssii", $name, $description, $price, $category, $image_url, $hover_image_url, $featured_image_url, $badge, $in_stock, $id);
+    $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=?, category=?, image_url=?, hover_image_url=?, featured_image_url=?, badge=?, quantity=?, in_stock=? WHERE id=?");
+    $stmt->bind_param("ssdsssssiii", $name, $description, $price, $category, $image_url, $hover_image_url, $featured_image_url, $badge, $quantity, $in_stock, $id);
     
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Product updated successfully']);
+        $status_msg = ($quantity === 0)
+            ? 'Product updated — marked as Out of Stock (quantity is 0)'
+            : 'Product updated successfully';
+        echo json_encode(['success' => true, 'message' => $status_msg]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Error updating product']);
     }
@@ -241,7 +250,7 @@ function getOrder($conn) {
 }
 
 function updateOrderStatus($conn) {
-    $id = intval($_POST['id'] ?? 0);
+    $id     = intval($_POST['id'] ?? 0);
     $status = trim($_POST['status'] ?? '');
 
     $allowed_statuses = ['pending', 'processing', 'completed', 'cancelled'];
@@ -300,10 +309,10 @@ function getUser($conn) {
 }
 
 function updateUser($conn) {
-    $id = intval($_POST['id'] ?? 0);
-    $name = trim($_POST['name'] ?? '');
+    $id    = intval($_POST['id'] ?? 0);
+    $name  = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $role = trim($_POST['role'] ?? 'customer');
+    $role  = trim($_POST['role'] ?? 'customer');
 
     if (empty($name) || empty($email)) {
         echo json_encode(['success' => false, 'message' => 'Invalid user data']);
@@ -364,7 +373,7 @@ function deleteMessage($conn) {
 }
 
 function updateMessageStatus($conn) {
-    $id = intval($_POST['id'] ?? 0);
+    $id     = intval($_POST['id'] ?? 0);
     $status = trim($_POST['status'] ?? '');
 
     $allowed_statuses = ['unread', 'read', 'replied'];
@@ -388,10 +397,10 @@ function getStats($conn) {
     $stats = [];
 
     // Total products
-    $result = $conn->query("SELECT COUNT(*) as count FROM products");
+    $result = $conn->query("SELECT COUNT(*) as count FROM products WHERE archived = 0 OR archived IS NULL");
     $stats['products'] = $result->fetch_assoc()['count'];
 
-    // Total users
+    // Total customers
     $result = $conn->query("SELECT COUNT(*) as count FROM users WHERE role = 'customer'");
     $stats['customers'] = $result->fetch_assoc()['count'];
 
